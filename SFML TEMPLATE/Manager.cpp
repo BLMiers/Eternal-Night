@@ -140,16 +140,8 @@ void Manager::UpdateMenu()
 
 void Manager::UpdateJogo()
 {
-	//Colisão personagem//
-	if (telajogo.player.getGlobalBounds().intersects(telajogo.S_monstro.getGlobalBounds()))
-	{
-		personagem.colisao = true;
-	}
-	else
-	{
-		personagem.colisao = false;
-	}
-
+	personagem.colisao = telajogo.player.getGlobalBounds().intersects(telajogo.S_monstro.getGlobalBounds());
+	
 	//Movimentação Personagem//
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
 	{
@@ -159,7 +151,7 @@ void Manager::UpdateJogo()
 		}
 		else
 		{
-			telajogo.player.move(0, 0.1);
+			telajogo.player.move(0, 10);
 		}
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
@@ -170,7 +162,7 @@ void Manager::UpdateJogo()
 		}
 		else
 		{
-			telajogo.player.move(0.1, 0);
+			telajogo.player.move(10, 0);
 		}
 
 	}
@@ -182,7 +174,7 @@ void Manager::UpdateJogo()
 		}
 		else
 		{
-			telajogo.player.move(0, -0.1);
+			telajogo.player.move(0, -10);
 		}
 
 	}
@@ -194,7 +186,7 @@ void Manager::UpdateJogo()
 		}
 		else
 		{
-			telajogo.player.move(-0.1, 0);
+			telajogo.player.move(-10, 0);
 		}
 
 	}
