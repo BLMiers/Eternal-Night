@@ -43,10 +43,10 @@ Manager::Manager()
 	telajogo.player.setPosition(500, 480);
 	telajogo.player.setOrigin(telajogo.player.getLocalBounds().width*0.5f, telajogo.player.getLocalBounds().height*0.5f);
 	//Mahcado//
-	telajogo.T_machado.loadFromFile("Assets/Machado.png");
-	telajogo.S_machado.setTexture(telajogo.T_machado);
-	telajogo.S_machado.setTextureRect(sf::IntRect(0, 0, 2, 2));
-	telajogo.S_machado.setScale(10, 10);
+	machado.T_machado.loadFromFile("Assets/Machado.png");
+	machado.S_machado.setTexture(machado.T_machado);
+	machado.S_machado.setTextureRect(sf::IntRect(0, 0, 2, 2));
+	machado.S_machado.setScale(10, 10);
 	//telajogo.S_machado.setPosition(telajogo.player.getPosition().x + 65, telajogo.player.getPosition().y+65);
 	//Monstro//
 	telajogo.T_monstro.loadFromFile("Assets/Monstro.png");
@@ -143,63 +143,57 @@ void Manager::UpdateJogo()
 	personagem.colisao = telajogo.player.getGlobalBounds().intersects(telajogo.S_monstro.getGlobalBounds());
 	
 	//Movimentação Personagem//
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+	if (!personagem.colisao)
 	{
-		if (personagem.colisao != true)
-		{
-			telajogo.player.move(0, -0.1);
-		}
-		else
-		{
-			telajogo.player.move(0, 10);
-		}
-	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-	{
-		if (personagem.colisao != true)
-		{
-			telajogo.player.move(-0.1, 0);
-		}
-		else
-		{
-			telajogo.player.move(10, 0);
-		}
+		cima = sf::Keyboard::isKeyPressed(sf::Keyboard::W);
+		baixo = sf::Keyboard::isKeyPressed(sf::Keyboard::S);
+		esquerda = sf::Keyboard::isKeyPressed(sf::Keyboard::A);
+		direita = sf::Keyboard::isKeyPressed(sf::Keyboard::D);
 
-	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-	{
-		if (personagem.colisao != true)
+		if (cima)
 		{
-			telajogo.player.move(0, 0.1);
+			telajogo.player.move(0, -.1f * VELOCIDADE_PLAYER);
+			direcaoVertical = -1;
+		}
+		else if (baixo)
+		{
+			telajogo.player.move(0,.1f* VELOCIDADE_PLAYER);
+			direcaoVertical = 1;
 		}
 		else
+			direcaoVertical = 0;
+		if (esquerda)
 		{
-			telajogo.player.move(0, -10);
+			telajogo.player.move(-.1f* VELOCIDADE_PLAYER, 0);
+			direcaoHorizontal = -1;
 		}
-
-	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-	{
-		if (personagem.colisao != true)
+		else if (direita)
 		{
-			telajogo.player.move(0.1, 0);
+			telajogo.player.move(.1f* VELOCIDADE_PLAYER, 0);
+			direcaoHorizontal = 1;
 		}
 		else
-		{
-			telajogo.player.move(-10, 0);
-		}
-
+			direcaoHorizontal = 0;
 	}
+	else
+	{
+		telajogo.player.move(-direcaoHorizontal*10, -direcaoVertical*10);
+		direcaoHorizontal = 0;
+		direcaoVertical = 0;
+	}
+	
 	//Rotação do Personagem//
 	telajogo.player.setRotation(calcularAngulo((sf::Vector2f)posicaoMouse, telajogo.player.getPosition()));
 	//Arremesso de Machado//
-	if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+	if (machado.arremesando)
 	{
-		telajogo.S_machado.setPosition(telajogo.player.getPosition().x + 65, telajogo.player.getPosition().y + 65);
-		machado = true;
+		sf::Vector2f aux = machado.direcaoArremesso*machado.velocidade;
+		machado.S_machado.move(aux);
+		if (Magnitude(machado.S_machado.getPosition() - machado.destino) < 1.f)
+			machado.arremesando = false;
 	}
-	
-	
+	if (machado.S_machado.getPosition().x > SCREEN_WIDTH || machado.S_machado.getPosition().x < 0 || machado.S_machado.getPosition().y < 0 || machado.S_machado.getPosition().y > SCREEN_HEIGHT)
+		machado.arremesando = false;
 }
 
 void Manager::UpdateGameOver()
@@ -216,11 +210,13 @@ void Manager::RenderMenu()
 void Manager::RenderJogo()
 {
 	janela->draw(telajogo.player);
-	//if (machado) {
-		//janela->draw(telajogo.S_machado);
-			//machado = false;
-	janela->draw(telajogo.S_monstro);
+	if (machado.arremesando) {
+		janela->draw(machado.S_machado);
+		
 	}
+	janela->draw(telajogo.S_monstro);
+
+}
 
 
 void Manager::RenderGameOver()
@@ -243,9 +239,19 @@ void Manager::MouseClicado()
 	switch (eventos.mouseButton.button)
 	{
 	case sf::Mouse::Left: //Mouse Botao Esquerdo Pressionado
+		if (estadoTela == JOGO)
+		{
+			if (machado.arremesando == false)
+			{
+				machado.destino = (sf::Vector2f)posicaoMouse;
+				machado.arremesando = true;
+				machado.S_machado.setPosition(telajogo.player.getPosition());
+				machado.direcaoArremesso = (sf::Vector2f)posicaoMouse - telajogo.player.getPosition();
+			}
+		}
 		if (MouseClicouEmCima(telaMenu.Botao.getPosition(), sf::Vector2f(telaMenu.Botao.getGlobalBounds().width, telaMenu.Botao.getGlobalBounds().height)))
 			estadoTela = JOGO;
-
+		
 		break;
 
 	case sf::Mouse::Right: //Mouse Botao Direito Pressionado

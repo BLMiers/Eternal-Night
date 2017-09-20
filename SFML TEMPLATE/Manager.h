@@ -5,12 +5,19 @@
 
 #define SCREEN_HEIGHT 720
 #define SCREEN_WIDTH 1280
+#define VELOCIDADE_PLAYER 1
 
 #define PI 3.14159265359f
 
 #define MENU 0
 #define JOGO 1
 #define GAMEOVER 2
+
+template <typename T>
+float Magnitude(const sf::Vector2<T>& v1)
+{
+	return (sqrtf((v1.x)*(v1.x)) + ((v1.y)*(v1.y)));
+}
 
 //Tela do Menu//
 struct Menu
@@ -22,13 +29,20 @@ struct Menu
 	sf::RectangleShape m_rect;
 	sf::Sprite Botao;
 };
+struct Machado
+{
+	sf::Texture T_machado;
+	sf::Sprite S_machado;
+	sf::Vector2f direcaoArremesso, destino;
+	bool arremesando = false;
+	float velocidade = .005f;
+};
+
 //Tela do Jogo//
 struct Jogo
 {
 	sf::Texture personagem;
 	sf::Sprite player;
-	sf::Texture T_machado;
-	sf::Sprite S_machado;
 	sf::Texture T_monstro;
 	sf::Sprite S_monstro;
 
@@ -49,8 +63,10 @@ private: //AQUI VOCÊ CRIA AS VARIÁVEIS
 	Menu telaMenu;
 	Jogo telajogo;
 	Player personagem;
+	Machado machado;
 
-	short estadoTela = MENU;
+	short estadoTela = MENU, direcaoHorizontal, direcaoVertical;
+	bool cima, baixo, esquerda, direita;
 	bool quit = false;
 public:
 	Manager();
