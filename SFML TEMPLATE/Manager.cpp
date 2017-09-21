@@ -43,7 +43,7 @@ Manager::Manager()
 	telajogo.player.setTexture(telajogo.personagem);
 	telajogo.player.setTextureRect(sf::IntRect(0, 0, 8, 16));
 	telajogo.player.setScale(10, 10);
-	telajogo.player.setPosition(500, 480);
+	telajogo.player.setPosition(1000, 200);
 	telajogo.player.setOrigin(telajogo.player.getLocalBounds().width*0.5f, telajogo.player.getLocalBounds().height*0.5f);
 
 	//Mahcado//
@@ -191,6 +191,8 @@ void Manager::UpdateJogo()
 	
 	//Rotação do Personagem//
 	telajogo.player.setRotation(calcularAngulo((sf::Vector2f)posicaoMouse, telajogo.player.getPosition()));
+	telajogo.S_monstro.setRotation(calcularAngulo((sf::Vector2f)telajogo.S_monstro.getPosition(), telajogo.player.getPosition()));
+
 	//Arremesso de Machado//
 	if (machado.arremesando)
 	{
