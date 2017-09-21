@@ -49,7 +49,11 @@ struct Jogo
 {
 	sf::Texture personagem;
 	sf::Sprite player;
-	
+	sf::Texture T_monstro;
+	sf::Sprite S_monstro;
+	sf::Sprite S_parede;
+	sf::Texture T_parede;
+
 };
 //Atributos do Jogador//
 struct Player
@@ -95,5 +99,15 @@ public:
 	void MouseMovido();
 
 	bool MouseClicouEmCima(sf::Vector2f posObjeto, sf::Vector2f dimensaoObjeto);
+
+	bool Colisao() {
+		if (telajogo.player.getGlobalBounds().intersects(telajogo.S_monstro.getGlobalBounds())) {
+			return true;
+		}
+		if (telajogo.player.getGlobalBounds().intersects(telajogo.S_parede.getGlobalBounds())){
+			return true;
+		}
+		return false;
+	}
 };
 
