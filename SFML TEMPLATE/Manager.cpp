@@ -203,6 +203,7 @@ void Manager::UpdateJogo()
 	}
 	if (machado.S_machado.getPosition().x > SCREEN_WIDTH || machado.S_machado.getPosition().x < 0 || machado.S_machado.getPosition().y < 0 || machado.S_machado.getPosition().y > SCREEN_HEIGHT)
 		machado.arremesando = false;
+
 }
 
 void Manager::UpdateGameOver()

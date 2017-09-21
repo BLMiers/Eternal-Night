@@ -37,6 +37,12 @@ struct Machado
 	bool arremesando = false;
 	float velocidade = .005f;
 };
+struct Monstro
+{
+	sf::Texture T_monstro;
+	sf::Sprite S_monstro;
+	int vida = 1;
+};
 
 //Tela do Jogo//
 struct Jogo
@@ -53,8 +59,7 @@ struct Jogo
 struct Player
 {
 	bool colisao = false;
-	float vel = 0;
-	float acce = 0;
+	
 };
 class Manager
 {
@@ -66,6 +71,7 @@ private: //AQUI VOCÊ CRIA AS VARIÁVEIS
 	Jogo telajogo;
 	Player personagem;
 	Machado machado;
+	Monstro monstro;
 
 	short estadoTela = MENU, direcaoHorizontal, direcaoVertical;
 	bool cima, baixo, esquerda, direita;
