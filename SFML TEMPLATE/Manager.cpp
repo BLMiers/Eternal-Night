@@ -64,6 +64,12 @@ Manager::Manager()
 	telajogo.T_parede.loadFromFile("Assets/Parede.png");
 	telajogo.S_parede.setTexture(telajogo.T_parede);
 	telajogo.S_parede.setTextureRect(sf::IntRect(0, 0, 128, 128));
+
+	//Chão//
+	telajogo.T_chao.loadFromFile("Assets/Chao.png");
+	telajogo.S_chao.setTexture(telajogo.T_chao);
+	telajogo.S_chao.setTextureRect(sf::IntRect(0, 0, 128, 128));
+	telajogo.S_chao.setScale(10, 8);
 }
 
 Manager::~Manager() {
@@ -219,6 +225,7 @@ void Manager::RenderMenu()
 
 void Manager::RenderJogo()
 {
+	janela->draw(telajogo.S_chao);
 	janela->draw(telajogo.player);
 	if (machado.arremesando) {
 		janela->draw(machado.S_machado);

@@ -53,6 +53,8 @@ struct Jogo
 	sf::Sprite S_monstro;
 	sf::Sprite S_parede;
 	sf::Texture T_parede;
+	sf::Sprite S_chao;
+	sf::Texture T_chao;
 
 };
 //Atributos do Jogador//
