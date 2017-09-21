@@ -14,27 +14,30 @@ float calcularAngulo(sf::Vector2f& obj)
 
 Manager::Manager()
 {
-	janela = new sf::RenderWindow(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "Jogo");
+	janela = new sf::RenderWindow(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "Eternal Night");
 
 	//Tela de Fundo//
 	telaMenu.fundoMenu.loadFromFile("Assets/Fundo.png");
 	telaMenu.fundo.setTexture(&telaMenu.fundoMenu);
 	telaMenu.fundo.setTextureRect(sf::IntRect(0, 0, 240, 160));
 	telaMenu.fundo.setSize(sf::Vector2f(SCREEN_WIDTH, SCREEN_HEIGHT));
-	telaMenu.fundo.setPosition(0,0);
+	telaMenu.fundo.setPosition(0, 0);
+
 	//TituloJogo//
 	telaMenu.m_texrura.loadFromFile("Assets/Titulo.png");
 	telaMenu.m_rect.setTexture(&telaMenu.m_texrura);
 	telaMenu.m_rect.setTextureRect(sf::IntRect(0, 0, 32, 32));
 	telaMenu.m_rect.setSize(sf::Vector2f(500, 320));
-	telaMenu.m_rect.setPosition(410,50);
+	telaMenu.m_rect.setPosition(410, 50);
+
 	//Botãomenu//
 	telaMenu.botaoMenu.loadFromFile("Assets/botaomenu.png");
 	telaMenu.Botao.setTexture(telaMenu.botaoMenu);
 	telaMenu.Botao.setTextureRect(sf::IntRect(0, 0, 32, 13));
-	telaMenu.Botao.setScale(10,10);
-	telaMenu.Botao.setPosition(500,480);
+	telaMenu.Botao.setScale(10, 10);
+	telaMenu.Botao.setPosition(500, 480);
 	//telaMenu.Botao.setOrigin(telaMenu.Botao.getLocalBounds().width*0.5f, telaMenu.Botao.getLocalBounds().height*0.5f);
+
 	//PLayer//
 	telajogo.personagem.loadFromFile("Assets/Personagem.png");
 	telajogo.player.setTexture(telajogo.personagem);
@@ -42,25 +45,31 @@ Manager::Manager()
 	telajogo.player.setScale(10, 10);
 	telajogo.player.setPosition(500, 480);
 	telajogo.player.setOrigin(telajogo.player.getLocalBounds().width*0.5f, telajogo.player.getLocalBounds().height*0.5f);
+
 	//Mahcado//
 	machado.T_machado.loadFromFile("Assets/Machado.png");
 	machado.S_machado.setTexture(machado.T_machado);
 	machado.S_machado.setTextureRect(sf::IntRect(0, 0, 2, 2));
 	machado.S_machado.setScale(10, 10);
 	//telajogo.S_machado.setPosition(telajogo.player.getPosition().x + 65, telajogo.player.getPosition().y+65);
+
 	//Monstro//
 	telajogo.T_monstro.loadFromFile("Assets/Monstro.png");
 	telajogo.S_monstro.setTexture(telajogo.T_monstro);
 	telajogo.S_monstro.setTextureRect(sf::IntRect(0, 0, 21, 12));
 	telajogo.S_monstro.setScale(10, 10);
 	telajogo.S_monstro.setPosition(600, 480);
-} 
 
-
-Manager::~Manager()
-{
-	delete janela;
+	//Parede//
+	telajogo.T_parede.loadFromFile("Assets/Parede.png");
+	telajogo.S_parede.setTexture(telajogo.T_parede);
+	telajogo.S_parede.setTextureRect(sf::IntRect(0, 0, 128, 128));
 }
+
+Manager::~Manager() {
+	delete janela;
+
+	}
 
 void Manager::Programa()
 {
@@ -140,11 +149,9 @@ void Manager::UpdateMenu()
 
 void Manager::UpdateJogo()
 {
-	personagem.colisao = telajogo.player.getGlobalBounds().intersects(telajogo.S_monstro.getGlobalBounds());
 	
 	//Movimentação Personagem//
-	if (!personagem.colisao)
-	{
+	if (!Colisao()) {
 		cima = sf::Keyboard::isKeyPressed(sf::Keyboard::W);
 		baixo = sf::Keyboard::isKeyPressed(sf::Keyboard::S);
 		esquerda = sf::Keyboard::isKeyPressed(sf::Keyboard::A);
@@ -177,9 +184,9 @@ void Manager::UpdateJogo()
 	}
 	else
 	{
-		telajogo.player.move(-direcaoHorizontal*10, -direcaoVertical*10);
-		direcaoHorizontal = 0;
-		direcaoVertical = 0;
+			telajogo.player.move(-direcaoHorizontal * 10, -direcaoVertical * 10);
+			direcaoHorizontal = 0;
+			direcaoVertical = 0;
 	}
 	
 	//Rotação do Personagem//
@@ -215,6 +222,7 @@ void Manager::RenderJogo()
 		
 	}
 	janela->draw(telajogo.S_monstro);
+	janela->draw(telajogo.S_parede);
 
 }
 
@@ -255,6 +263,7 @@ void Manager::MouseClicado()
 		break;
 
 	case sf::Mouse::Right: //Mouse Botao Direito Pressionado
+		telajogo.S_parede.setPosition(posicaoMouse.x, posicaoMouse.y);
 		break;
 	}
 }
