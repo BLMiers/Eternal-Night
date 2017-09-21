@@ -49,11 +49,11 @@ Manager::Manager()
 	machado.S_machado.setScale(10, 10);
 	//telajogo.S_machado.setPosition(telajogo.player.getPosition().x + 65, telajogo.player.getPosition().y+65);
 	//Monstro//
-	telajogo.T_monstro.loadFromFile("Assets/Monstro.png");
-	telajogo.S_monstro.setTexture(telajogo.T_monstro);
-	telajogo.S_monstro.setTextureRect(sf::IntRect(0, 0, 21, 12));
-	telajogo.S_monstro.setScale(10, 10);
-	telajogo.S_monstro.setPosition(600, 480);
+	monstro.T_monstro.loadFromFile("Assets/Monstro.png");
+	monstro.S_monstro.setTexture(monstro.T_monstro);
+	monstro.S_monstro.setTextureRect(sf::IntRect(0, 0, 21, 12));
+	monstro.S_monstro.setScale(10, 10);
+	monstro.S_monstro.setPosition(600, 480);
 } 
 
 
@@ -140,7 +140,7 @@ void Manager::UpdateMenu()
 
 void Manager::UpdateJogo()
 {
-	personagem.colisao = telajogo.player.getGlobalBounds().intersects(telajogo.S_monstro.getGlobalBounds());
+	personagem.colisao = telajogo.player.getGlobalBounds().intersects(monstro.S_monstro.getGlobalBounds());
 	
 	//Movimentação Personagem//
 	if (!personagem.colisao)
@@ -194,6 +194,7 @@ void Manager::UpdateJogo()
 	}
 	if (machado.S_machado.getPosition().x > SCREEN_WIDTH || machado.S_machado.getPosition().x < 0 || machado.S_machado.getPosition().y < 0 || machado.S_machado.getPosition().y > SCREEN_HEIGHT)
 		machado.arremesando = false;
+
 }
 
 void Manager::UpdateGameOver()
@@ -214,7 +215,7 @@ void Manager::RenderJogo()
 		janela->draw(machado.S_machado);
 		
 	}
-	janela->draw(telajogo.S_monstro);
+	janela->draw(monstro.S_monstro);
 
 }
 
