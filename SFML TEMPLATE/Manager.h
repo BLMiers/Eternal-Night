@@ -35,7 +35,7 @@ struct Machado
 	sf::Sprite S_machado;
 	sf::Vector2f direcaoArremesso, destino;
 	bool arremesando = false;
-	float velocidade = .0005f;
+	float velocidade = .005f;
 };
 struct Monstro
 {
@@ -43,7 +43,7 @@ struct Monstro
 	sf::Sprite S_monstro;
 	int vida = 1;
 	sf::Vector2f direcaoMonstro;
-	float velocidade_monstro = .00005f;
+	float velocidade_monstro = .0005f;
 };
 
 //Tela do Jogo//
@@ -104,7 +104,9 @@ public:
 
 	bool Colisao() {
 		if (telajogo.player.getGlobalBounds().intersects(monstro.S_monstro.getGlobalBounds())) {
-			return true;
+			if (monstro.vida >= 1) {
+				return true;
+			}
 		}
 		if (telajogo.player.getGlobalBounds().intersects(telajogo.S_parede.getGlobalBounds())){
 			return true;

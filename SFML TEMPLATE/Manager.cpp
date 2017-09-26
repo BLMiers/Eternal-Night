@@ -210,9 +210,10 @@ void Manager::UpdateJogo()
 	if (machado.S_machado.getPosition().x > SCREEN_WIDTH || machado.S_machado.getPosition().x < 0 || machado.S_machado.getPosition().y < 0 || machado.S_machado.getPosition().y > SCREEN_HEIGHT)
 		machado.arremesando = false;
 	//Monstro Seguindo player//
-	monstro.direcaoMonstro = ((sf::Vector2f)telajogo.player.getPosition() - monstro.S_monstro.getPosition());
-	monstro.S_monstro.move(monstro.direcaoMonstro*monstro.velocidade_monstro);
-
+	if (monstro.vida >= 1) {
+		monstro.direcaoMonstro = ((sf::Vector2f)telajogo.player.getPosition() - monstro.S_monstro.getPosition());
+		monstro.S_monstro.move(monstro.direcaoMonstro*monstro.velocidade_monstro);
+	}
 }
 
 void Manager::UpdateGameOver()
