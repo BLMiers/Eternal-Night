@@ -49,21 +49,21 @@ Manager::Manager()
 	//Mahcado//
 	machado.T_machado.loadFromFile("Assets/Machado.png");
 	machado.S_machado.setTexture(machado.T_machado);
-	machado.S_machado.setTextureRect(sf::IntRect(0, 0, 2, 2));
-	machado.S_machado.setScale(10, 10);
+	machado.S_machado.setTextureRect(sf::IntRect(0, 0, 117, 512));
+	machado.S_machado.setScale(0.2, 0.2);
 	//telajogo.S_machado.setPosition(telajogo.player.getPosition().x + 65, telajogo.player.getPosition().y+65);
 
 	//Monstro//
-	telajogo.T_monstro.loadFromFile("Assets/Monstro.png");
-	telajogo.S_monstro.setTexture(telajogo.T_monstro);
-	telajogo.S_monstro.setTextureRect(sf::IntRect(0, 0, 21, 12));
-	telajogo.S_monstro.setScale(10, 10);
-	telajogo.S_monstro.setPosition(600, 480);
+	monstro.T_monstro.loadFromFile("Assets/Monstro.png");
+	monstro.S_monstro.setTexture(monstro.T_monstro);
+	monstro.S_monstro.setTextureRect(sf::IntRect(0, 0, 12,21));
+	monstro.S_monstro.setScale(10, 10);
+	monstro.S_monstro.setPosition(600, 480);
 
 	//Parede//
 	telajogo.T_parede.loadFromFile("Assets/Parede.png");
 	telajogo.S_parede.setTexture(telajogo.T_parede);
-	telajogo.S_parede.setTextureRect(sf::IntRect(0, 0, 128, 128));
+	telajogo.S_parede.setTextureRect(sf::IntRect(0, 0, 62, 28));
 
 	//Chão//
 	telajogo.T_chao.loadFromFile("Assets/Chao.png");
@@ -197,7 +197,7 @@ void Manager::UpdateJogo()
 	
 	//Rotação do Personagem//
 	telajogo.player.setRotation(calcularAngulo((sf::Vector2f)posicaoMouse, telajogo.player.getPosition()));
-	telajogo.S_monstro.setRotation(calcularAngulo((sf::Vector2f)telajogo.S_monstro.getPosition(), telajogo.player.getPosition()));
+	monstro.S_monstro.setRotation(calcularAngulo((sf::Vector2f)monstro.S_monstro.getPosition(), telajogo.player.getPosition()));
 
 	//Arremesso de Machado//
 	if (machado.arremesando)
@@ -209,6 +209,9 @@ void Manager::UpdateJogo()
 	}
 	if (machado.S_machado.getPosition().x > SCREEN_WIDTH || machado.S_machado.getPosition().x < 0 || machado.S_machado.getPosition().y < 0 || machado.S_machado.getPosition().y > SCREEN_HEIGHT)
 		machado.arremesando = false;
+	//Monstro Seguindo player//
+	monstro.direcaoMonstro = ((sf::Vector2f)telajogo.player.getPosition() - monstro.S_monstro.getPosition());
+	monstro.S_monstro.move(monstro.direcaoMonstro*monstro.velocidade_monstro);
 
 }
 
@@ -231,7 +234,9 @@ void Manager::RenderJogo()
 		janela->draw(machado.S_machado);
 		
 	}
-	janela->draw(telajogo.S_monstro);
+	if (monstro.vida >= 1) {
+		janela->draw(monstro.S_monstro);
+	}
 	janela->draw(telajogo.S_parede);
 
 }

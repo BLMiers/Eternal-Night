@@ -35,13 +35,15 @@ struct Machado
 	sf::Sprite S_machado;
 	sf::Vector2f direcaoArremesso, destino;
 	bool arremesando = false;
-	float velocidade = .005f;
+	float velocidade = .0005f;
 };
 struct Monstro
 {
 	sf::Texture T_monstro;
 	sf::Sprite S_monstro;
 	int vida = 1;
+	sf::Vector2f direcaoMonstro;
+	float velocidade_monstro = .00005f;
 };
 
 //Tela do Jogo//
@@ -49,8 +51,6 @@ struct Jogo
 {
 	sf::Texture personagem;
 	sf::Sprite player;
-	sf::Texture T_monstro;
-	sf::Sprite S_monstro;
 	sf::Sprite S_parede;
 	sf::Texture T_parede;
 	sf::Sprite S_chao;
@@ -103,11 +103,14 @@ public:
 	bool MouseClicouEmCima(sf::Vector2f posObjeto, sf::Vector2f dimensaoObjeto);
 
 	bool Colisao() {
-		if (telajogo.player.getGlobalBounds().intersects(telajogo.S_monstro.getGlobalBounds())) {
+		if (telajogo.player.getGlobalBounds().intersects(monstro.S_monstro.getGlobalBounds())) {
 			return true;
 		}
 		if (telajogo.player.getGlobalBounds().intersects(telajogo.S_parede.getGlobalBounds())){
 			return true;
+		}
+		if (machado.S_machado.getGlobalBounds().intersects(monstro.S_monstro.getGlobalBounds())) {
+			monstro.vida--;
 		}
 		return false;
 	}
