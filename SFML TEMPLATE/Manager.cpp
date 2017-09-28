@@ -19,22 +19,22 @@ Manager::Manager()
 	//Tela de Fundo//
 	telaMenu.fundoMenu.loadFromFile("Assets/Fundo.png");
 	telaMenu.fundo.setTexture(&telaMenu.fundoMenu);
-	telaMenu.fundo.setTextureRect(sf::IntRect(0, 0, 240, 160));
+	telaMenu.fundo.setTextureRect(sf::IntRect(0, 0, 160, 90));
 	telaMenu.fundo.setSize(sf::Vector2f(SCREEN_WIDTH, SCREEN_HEIGHT));
 	telaMenu.fundo.setPosition(0, 0);
 
 	//TituloJogo//
 	telaMenu.m_texrura.loadFromFile("Assets/Titulo.png");
 	telaMenu.m_rect.setTexture(&telaMenu.m_texrura);
-	telaMenu.m_rect.setTextureRect(sf::IntRect(0, 0, 32, 32));
+	telaMenu.m_rect.setTextureRect(sf::IntRect(0, 0, 160, 90));
 	telaMenu.m_rect.setSize(sf::Vector2f(500, 320));
 	telaMenu.m_rect.setPosition(410, 50);
 
 	//Botãomenu//
-	telaMenu.botaoMenu.loadFromFile("Assets/botaomenu.png");
+	telaMenu.botaoMenu.loadFromFile("Assets/Botao_Start.png");
 	telaMenu.Botao.setTexture(telaMenu.botaoMenu);
-	telaMenu.Botao.setTextureRect(sf::IntRect(0, 0, 32, 13));
-	telaMenu.Botao.setScale(10, 10);
+	telaMenu.Botao.setTextureRect(sf::IntRect(0, 0, 79, 33));
+	telaMenu.Botao.setScale(2, 2);
 	telaMenu.Botao.setPosition(500, 480);
 	//telaMenu.Botao.setOrigin(telaMenu.Botao.getLocalBounds().width*0.5f, telaMenu.Botao.getLocalBounds().height*0.5f);
 
@@ -42,7 +42,7 @@ Manager::Manager()
 	telajogo.personagem.loadFromFile("Assets/Personagem.png");
 	telajogo.player.setTexture(telajogo.personagem);
 	telajogo.player.setTextureRect(sf::IntRect(0, 0, 8, 16));
-	telajogo.player.setScale(10, 10);
+	telajogo.player.setScale(3, 3);
 	telajogo.player.setPosition(1000, 200);
 	telajogo.player.setOrigin(telajogo.player.getLocalBounds().width*0.5f, telajogo.player.getLocalBounds().height*0.5f);
 
@@ -50,14 +50,14 @@ Manager::Manager()
 	machado.T_machado.loadFromFile("Assets/Machado.png");
 	machado.S_machado.setTexture(machado.T_machado);
 	machado.S_machado.setTextureRect(sf::IntRect(0, 0, 117, 512));
-	machado.S_machado.setScale(0.2, 0.2);
+	machado.S_machado.setScale(0.05, 0.05);
 	//telajogo.S_machado.setPosition(telajogo.player.getPosition().x + 65, telajogo.player.getPosition().y+65);
 
 	//Monstro//
 	monstro.T_monstro.loadFromFile("Assets/Monstro.png");
 	monstro.S_monstro.setTexture(monstro.T_monstro);
 	monstro.S_monstro.setTextureRect(sf::IntRect(0, 0, 12,21));
-	monstro.S_monstro.setScale(10, 10);
+	monstro.S_monstro.setScale(3, 3);
 	monstro.S_monstro.setPosition(600, 480);
 
 	//Parede//
@@ -65,11 +65,12 @@ Manager::Manager()
 	telajogo.S_parede.setTexture(telajogo.T_parede);
 	telajogo.S_parede.setTextureRect(sf::IntRect(0, 0, 62, 28));
 
-	//Chão//
-	telajogo.T_chao.loadFromFile("Assets/Chao.png");
-	telajogo.S_chao.setTexture(telajogo.T_chao);
-	telajogo.S_chao.setTextureRect(sf::IntRect(0, 0, 128, 128));
-	telajogo.S_chao.setScale(10, 8);
+	//Mapa//
+	telajogo.T_mapa.loadFromFile("Assets/Mapa.png");
+	telajogo.mapa.setTexture(&telajogo.T_mapa);
+	telajogo.mapa.setTextureRect(sf::IntRect(0, 0, 256, 256));
+	telajogo.mapa.setSize(sf::Vector2f(SCREEN_WIDTH, SCREEN_HEIGHT));
+	telajogo.mapa.setPosition(0, 0);
 }
 
 Manager::~Manager() {
@@ -223,13 +224,13 @@ void Manager::UpdateGameOver()
 void Manager::RenderMenu()
 {
 	janela->draw(telaMenu.fundo);
-	janela->draw(telaMenu.m_rect);
+	//janela->draw(telaMenu.m_rect);
 	janela->draw(telaMenu.Botao);
 }
 
 void Manager::RenderJogo()
 {
-	janela->draw(telajogo.S_chao);
+	janela->draw(telajogo.mapa);
 	janela->draw(telajogo.player);
 	if (machado.arremesando) {
 		janela->draw(machado.S_machado);
@@ -254,7 +255,9 @@ void Manager::InputTeclado()
 	case sf::Keyboard::Escape:
 		quit = true;
 		break;
-	
+	case sf::Keyboard::E:
+		monstro.vida++;
+		break;
 	}
 }
 

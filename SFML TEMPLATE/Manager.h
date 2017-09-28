@@ -5,7 +5,7 @@
 
 #define SCREEN_HEIGHT 720
 #define SCREEN_WIDTH 1280
-#define VELOCIDADE_PLAYER 1
+#define VELOCIDADE_PLAYER 4
 
 #define PI 3.14159265359f
 
@@ -41,9 +41,9 @@ struct Monstro
 {
 	sf::Texture T_monstro;
 	sf::Sprite S_monstro;
-	int vida = 1;
 	sf::Vector2f direcaoMonstro;
 	float velocidade_monstro = .0005f;
+	int vida = 1;
 };
 
 //Tela do Jogo//
@@ -53,9 +53,8 @@ struct Jogo
 	sf::Sprite player;
 	sf::Sprite S_parede;
 	sf::Texture T_parede;
-	sf::Sprite S_chao;
-	sf::Texture T_chao;
-
+	sf::Texture T_mapa;
+	sf::RectangleShape mapa;
 };
 //Atributos do Jogador//
 struct Player
