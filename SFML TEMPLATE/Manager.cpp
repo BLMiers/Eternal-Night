@@ -15,6 +15,8 @@ float calcularAngulo(sf::Vector2f& obj)
 Manager::Manager()
 {
 	janela = new sf::RenderWindow(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "Eternal Night");
+	camera.setSize(533, 247);
+	camera.setCenter(telajogo.player.getPosition().x, telajogo.player.getPosition().y);
 
 	//Tela de Fundo//
 	telaMenu.fundoMenu.loadFromFile("Assets/Fundo.png");
@@ -68,7 +70,7 @@ Manager::Manager()
 	//Mapa//
 	telajogo.T_mapa.loadFromFile("Assets/Mapa.png");
 	telajogo.mapa.setTexture(&telajogo.T_mapa);
-	telajogo.mapa.setTextureRect(sf::IntRect(0, 0, 256, 256));
+	telajogo.mapa.setTextureRect(sf::IntRect(0, 0, 1280, 679));
 	telajogo.mapa.setSize(sf::Vector2f(SCREEN_WIDTH, SCREEN_HEIGHT));
 	telajogo.mapa.setPosition(0, 0);
 }
@@ -215,6 +217,8 @@ void Manager::UpdateJogo()
 		monstro.direcaoMonstro = ((sf::Vector2f)telajogo.player.getPosition() - monstro.S_monstro.getPosition());
 		monstro.S_monstro.move(monstro.direcaoMonstro*monstro.velocidade_monstro);
 	}
+	
+	janela->setView(camera);
 }
 
 void Manager::UpdateGameOver()

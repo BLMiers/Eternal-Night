@@ -5,7 +5,7 @@
 
 #define SCREEN_HEIGHT 720
 #define SCREEN_WIDTH 1280
-#define VELOCIDADE_PLAYER 4
+#define VELOCIDADE_PLAYER 1
 
 #define PI 3.14159265359f
 
@@ -35,14 +35,14 @@ struct Machado
 	sf::Sprite S_machado;
 	sf::Vector2f direcaoArremesso, destino;
 	bool arremesando = false;
-	float velocidade = .005f;
+	float velocidade = .0005f;
 };
 struct Monstro
 {
 	sf::Texture T_monstro;
 	sf::Sprite S_monstro;
 	sf::Vector2f direcaoMonstro;
-	float velocidade_monstro = .0005f;
+	float velocidade_monstro = .00005f;
 	int vida = 1;
 };
 
@@ -68,6 +68,7 @@ private: //AQUI VOCÊ CRIA AS VARIÁVEIS
 	sf::RenderWindow *janela = nullptr;
 	sf::Vector2i posicaoMouse;
 	sf::Event eventos;
+	sf::View camera;
 	Menu telaMenu;
 	Jogo telajogo;
 	Player personagem;
