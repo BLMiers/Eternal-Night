@@ -17,7 +17,7 @@ float calcularAngulo(sf::Vector2f& obj)
 {
 	return atan2f(obj.y, obj.x) * 180 / PI;
 }
-
+//
 Manager::Manager()
 {
 	janela = new sf::RenderWindow(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "Eternal Night");
