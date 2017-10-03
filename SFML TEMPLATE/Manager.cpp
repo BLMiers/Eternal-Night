@@ -71,6 +71,7 @@ Manager::Manager()
 	monstro.S_monstro.setTextureRect(sf::IntRect(0, 0, 12,21));
 	monstro.S_monstro.setScale(3, 3);
 	monstro.S_monstro.setPosition(600, 480);
+	monstro.S_monstro.setOrigin(monstro.S_monstro.getLocalBounds().width*0.5f, monstro.S_monstro.getLocalBounds().height*0.5f);
 
 	//Parede//
 	telajogo.T_parede.loadFromFile("Assets/Parede.png");
