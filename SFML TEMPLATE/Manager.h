@@ -5,6 +5,8 @@
 
 #define SCREEN_HEIGHT 720
 #define SCREEN_WIDTH 1280
+#define LARGURA_CAMERA 480
+#define ALTURA_CAMERA 270
 #define VELOCIDADE_PLAYER 1
 
 #define PI 3.14159265359f
@@ -67,8 +69,10 @@ class Manager
 private: //AQUI VOCÊ CRIA AS VARIÁVEIS
 	sf::RenderWindow *janela = nullptr;
 	sf::Vector2i posicaoMouse;
+	sf::Vector2f posicaoMouseMundo;
 	sf::Event eventos;
 	sf::View camera;
+	sf::FloatRect areaMovimentoCamera;
 	Menu telaMenu;
 	Jogo telajogo;
 	Player personagem;
@@ -116,5 +120,7 @@ public:
 		}
 		return false;
 	}
+	bool CameraDentroLimiteX();
+	bool CameraDentroLimiteY();
 };
 

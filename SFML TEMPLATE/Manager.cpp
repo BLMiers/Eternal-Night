@@ -2,6 +2,12 @@
 
 bool machado = false;
 
+bool VerificarCameraDentroX(sf::View&camera)
+{
+	if (camera.getCenter().x)
+		return false;
+}
+
 float calcularAngulo(const sf::Vector2f& mouse, const sf::Vector2f &player)
 {
 	return atan2f(mouse.y - player.y, mouse.x - player.x) * 180 / PI;
@@ -15,8 +21,12 @@ float calcularAngulo(sf::Vector2f& obj)
 Manager::Manager()
 {
 	janela = new sf::RenderWindow(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "Eternal Night");
-	camera.setSize(533, 247);
-	camera.setCenter(telajogo.player.getPosition().x, telajogo.player.getPosition().y);
+	camera.setSize(LARGURA_CAMERA, ALTURA_CAMERA);
+	camera.setCenter(telajogo.player.getPosition());
+	areaMovimentoCamera.width = (SCREEN_WIDTH - LARGURA_CAMERA)*1.f;
+	areaMovimentoCamera.height = (SCREEN_HEIGHT - ALTURA_CAMERA)*1.f;
+	areaMovimentoCamera.left = (SCREEN_WIDTH - areaMovimentoCamera.width)*.5f;
+	areaMovimentoCamera.top = (SCREEN_HEIGHT - areaMovimentoCamera.height)*.5f;
 
 	//Tela de Fundo//
 	telaMenu.fundoMenu.loadFromFile("Assets/Fundo.png");
@@ -95,6 +105,7 @@ void Manager::Inputs()
 	while (janela->pollEvent(eventos))
 	{
 		posicaoMouse = sf::Mouse::getPosition(*janela);
+		posicaoMouseMundo = janela->mapPixelToCoords(posicaoMouse);
 		switch (eventos.type)
 		{
 		case sf::Event::Closed:
@@ -199,7 +210,7 @@ void Manager::UpdateJogo()
 	}
 	
 	//Rotação do Personagem//
-	telajogo.player.setRotation(calcularAngulo((sf::Vector2f)posicaoMouse, telajogo.player.getPosition()));
+	telajogo.player.setRotation(calcularAngulo((sf::Vector2f)posicaoMouseMundo, telajogo.player.getPosition()));
 	monstro.S_monstro.setRotation(calcularAngulo((sf::Vector2f)monstro.S_monstro.getPosition(), telajogo.player.getPosition()));
 
 	//Arremesso de Machado//
@@ -217,7 +228,10 @@ void Manager::UpdateJogo()
 		monstro.direcaoMonstro = ((sf::Vector2f)telajogo.player.getPosition() - monstro.S_monstro.getPosition());
 		monstro.S_monstro.move(monstro.direcaoMonstro*monstro.velocidade_monstro);
 	}
-	
+	if (CameraDentroLimiteX())
+		camera.setCenter(telajogo.player.getPosition().x, camera.getCenter().y);
+	if (CameraDentroLimiteY())
+		camera.setCenter(camera.getCenter().x, telajogo.player.getPosition().y);
 	janela->setView(camera);
 }
 
@@ -228,7 +242,7 @@ void Manager::UpdateGameOver()
 void Manager::RenderMenu()
 {
 	janela->draw(telaMenu.fundo);
-	//janela->draw(telaMenu.m_rect);
+	janela->draw(telaMenu.m_rect);
 	janela->draw(telaMenu.Botao);
 }
 
@@ -274,10 +288,10 @@ void Manager::MouseClicado()
 		{
 			if (machado.arremesando == false)
 			{
-				machado.destino = (sf::Vector2f)posicaoMouse;
+				machado.destino = (sf::Vector2f)posicaoMouseMundo;
 				machado.arremesando = true;
 				machado.S_machado.setPosition(telajogo.player.getPosition());
-				machado.direcaoArremesso = (sf::Vector2f)posicaoMouse - telajogo.player.getPosition();
+				machado.direcaoArremesso = (sf::Vector2f)posicaoMouseMundo - telajogo.player.getPosition();
 			}
 		}
 		if (MouseClicouEmCima(telaMenu.Botao.getPosition(), sf::Vector2f(telaMenu.Botao.getGlobalBounds().width, telaMenu.Botao.getGlobalBounds().height)))
@@ -286,7 +300,7 @@ void Manager::MouseClicado()
 		break;
 
 	case sf::Mouse::Right: //Mouse Botao Direito Pressionado
-		telajogo.S_parede.setPosition(posicaoMouse.x, posicaoMouse.y);
+		telajogo.S_parede.setPosition(posicaoMouseMundo.x, posicaoMouseMundo.y);
 		break;
 	}
 }
@@ -306,3 +320,17 @@ bool Manager::MouseClicouEmCima(sf::Vector2f posObjeto, sf::Vector2f dimensaoObj
 	}
 	return false;
 }
+bool Manager::CameraDentroLimiteX()
+{
+	if (telajogo.player.getPosition().x >= areaMovimentoCamera.left && telajogo.player.getPosition().x <= areaMovimentoCamera.left + areaMovimentoCamera.width)
+		return true;
+	return false;
+}
+
+bool Manager::CameraDentroLimiteY()
+{
+	if (telajogo.player.getPosition().y >= areaMovimentoCamera.top && telajogo.player.getPosition().y <= areaMovimentoCamera.top + areaMovimentoCamera.height)
+		return true;
+	return false;
+}
+
