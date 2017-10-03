@@ -15,12 +15,6 @@
 #define JOGO 1
 #define GAMEOVER 2
 
-template <typename T>
-float Magnitude(const sf::Vector2<T>& v1)
-{
-	return (sqrtf((v1.x)*(v1.x)) + ((v1.y)*(v1.y)));
-}
-
 //Tela do Menu//
 struct Menu
 {
@@ -37,7 +31,7 @@ struct Machado
 	sf::Sprite S_machado;
 	sf::Vector2f direcaoArremesso, destino;
 	bool arremesando = false;
-	float velocidade = .0005f;
+	float velocidade = 5.f;
 };
 struct Monstro
 {
