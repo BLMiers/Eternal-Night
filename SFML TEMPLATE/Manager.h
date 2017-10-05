@@ -7,19 +7,13 @@
 #define SCREEN_WIDTH 1280
 #define LARGURA_CAMERA 480
 #define ALTURA_CAMERA 270
-#define VELOCIDADE_PLAYER 0.5
+#define VELOCIDADE_PLAYER 1
 
 #define PI 3.14159265359f
 
 #define MENU 0
 #define JOGO 1
 #define GAMEOVER 2
-
-template <typename T>
-float Magnitude(const sf::Vector2<T>& v1)
-{
-	return (sqrtf((v1.x)*(v1.x)) + ((v1.y)*(v1.y)));
-}
 
 //Tela do Menu//
 struct Menu
@@ -37,7 +31,7 @@ struct Machado
 	sf::Sprite S_machado;
 	sf::Vector2f direcaoArremesso, destino;
 	bool arremesando = false;
-	float velocidade = .0010f;
+	float velocidade = 5.f;
 };
 struct Monstro
 {
@@ -107,11 +101,14 @@ public:
 	bool MouseClicouEmCima(sf::Vector2f posObjeto, sf::Vector2f dimensaoObjeto);
 
 	bool Colisao() {
-		
+		if (telajogo.player.getGlobalBounds().intersects(monstro.S_monstro.getGlobalBounds())) {
+			if (monstro.vida >= 1) {
+				return true;
+			}
+		}
 		if (telajogo.player.getGlobalBounds().intersects(telajogo.S_parede.getGlobalBounds())){
 			return true;
 		}
-
 		if (machado.S_machado.getGlobalBounds().intersects(monstro.S_monstro.getGlobalBounds())) {
 			monstro.vida--;
 		}
