@@ -101,11 +101,8 @@ public:
 	bool MouseClicouEmCima(sf::Vector2f posObjeto, sf::Vector2f dimensaoObjeto);
 
 	bool Colisao() {
-		if (telajogo.player.getGlobalBounds().intersects(monstro.S_monstro.getGlobalBounds())) {
-			if (monstro.vida >= 1) {
-				return true;
-			}
-		}
+		
+		
 		if (telajogo.player.getGlobalBounds().intersects(telajogo.S_parede.getGlobalBounds())){
 			return true;
 		}
