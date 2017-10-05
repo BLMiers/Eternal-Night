@@ -24,13 +24,6 @@ inline float Magnitude(const sf::Vector2<T>& v1)
 	return (sqrtf((v1.x)*(v1.x)) + ((v1.y)*(v1.y)));
 }
 
-template <typename T>
-inline sf::Vector2<T> Normalizacao(const sf::Vector2<T>& v1)
-{
-	float magnitude = Magnitude(v1);
-	return sf::Vector2<T>(v1.x / magnitude, v1.y / magnitude);
-}
-
 Manager::Manager()
 {
 	janela = new sf::RenderWindow(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "Eternal Night");
@@ -230,8 +223,7 @@ void Manager::UpdateJogo()
 	//Arremesso de Machado//
 	if (machado.arremesando)
 	{
-		sf::Vector2f aux = Normalizacao(machado.direcaoArremesso) * machado.velocidade;
-		machado.S_machado.move(aux);
+		machado.S_machado.move(machado.vel);
 		if (Magnitude(machado.S_machado.getPosition() - machado.destino) < 1.f)
 			machado.arremesando = false;
 	}
@@ -307,7 +299,9 @@ void Manager::MouseClicado()
 				machado.destino = (sf::Vector2f)posicaoMouseMundo;
 				machado.arremesando = true;
 				machado.S_machado.setPosition(telajogo.player.getPosition());
-				machado.direcaoArremesso = sf::Vector2f(posicaoMouseMundo - telajogo.player.getPosition());
+				machado.direcaoArremesso = calcularAngulo(sf::Vector2f(posicaoMouseMundo - telajogo.player.getPosition()));
+				machado.vel = { cosf(machado.direcaoArremesso * PI/180), sinf(machado.direcaoArremesso * PI / 180) } ;
+				machado.vel *= machado.velocidade;
 			}
 		}
 		if (MouseClicouEmCima(telaMenu.Botao.getPosition(), sf::Vector2f(telaMenu.Botao.getGlobalBounds().width, telaMenu.Botao.getGlobalBounds().height)))

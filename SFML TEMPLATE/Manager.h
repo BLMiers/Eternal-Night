@@ -29,9 +29,9 @@ struct Machado
 {
 	sf::Texture T_machado;
 	sf::Sprite S_machado;
-	sf::Vector2f direcaoArremesso, destino;
+	sf::Vector2f destino, vel;
 	bool arremesando = false;
-	float velocidade = 5.f;
+	float velocidade = 1.f, direcaoArremesso;
 };
 struct Monstro
 {
@@ -114,4 +114,3 @@ public:
 	bool CameraDentroLimiteX();
 	bool CameraDentroLimiteY();
 };
-
