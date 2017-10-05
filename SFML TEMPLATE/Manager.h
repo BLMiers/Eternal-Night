@@ -7,7 +7,7 @@
 #define SCREEN_WIDTH 1280
 #define LARGURA_CAMERA 480
 #define ALTURA_CAMERA 270
-#define VELOCIDADE_PLAYER 1
+#define VELOCIDADE_PLAYER 0.5
 
 #define PI 3.14159265359f
 
@@ -37,7 +37,7 @@ struct Machado
 	sf::Sprite S_machado;
 	sf::Vector2f direcaoArremesso, destino;
 	bool arremesando = false;
-	float velocidade = .0005f;
+	float velocidade = .0010f;
 };
 struct Monstro
 {
@@ -107,14 +107,11 @@ public:
 	bool MouseClicouEmCima(sf::Vector2f posObjeto, sf::Vector2f dimensaoObjeto);
 
 	bool Colisao() {
-		if (telajogo.player.getGlobalBounds().intersects(monstro.S_monstro.getGlobalBounds())) {
-			if (monstro.vida >= 1) {
-				return true;
-			}
-		}
+		
 		if (telajogo.player.getGlobalBounds().intersects(telajogo.S_parede.getGlobalBounds())){
 			return true;
 		}
+
 		if (machado.S_machado.getGlobalBounds().intersects(monstro.S_monstro.getGlobalBounds())) {
 			monstro.vida--;
 		}

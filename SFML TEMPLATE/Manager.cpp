@@ -53,8 +53,8 @@ Manager::Manager()
 	//PLayer//
 	telajogo.personagem.loadFromFile("Assets/Personagem.png");
 	telajogo.player.setTexture(telajogo.personagem);
-	telajogo.player.setTextureRect(sf::IntRect(0, 0, 8, 16));
-	telajogo.player.setScale(3, 3);
+	telajogo.player.setTextureRect(sf::IntRect(0, 0, 33, 61));
+	telajogo.player.setScale(0.6, 0.6);
 	telajogo.player.setPosition(1000, 200);
 	telajogo.player.setOrigin(telajogo.player.getLocalBounds().width*0.5f, telajogo.player.getLocalBounds().height*0.5f);
 
@@ -68,8 +68,8 @@ Manager::Manager()
 	//Monstro//
 	monstro.T_monstro.loadFromFile("Assets/Monstro.png");
 	monstro.S_monstro.setTexture(monstro.T_monstro);
-	monstro.S_monstro.setTextureRect(sf::IntRect(0, 0, 12,21));
-	monstro.S_monstro.setScale(3, 3);
+	monstro.S_monstro.setTextureRect(sf::IntRect(0, 0, 34,65));
+	monstro.S_monstro.setScale(0.8, 0.8);
 	monstro.S_monstro.setPosition(600, 480);
 	monstro.S_monstro.setOrigin(monstro.S_monstro.getLocalBounds().width*0.5f, monstro.S_monstro.getLocalBounds().height*0.5f);
 
@@ -255,9 +255,11 @@ void Manager::RenderJogo()
 		janela->draw(machado.S_machado);
 		
 	}
+	
 	if (monstro.vida >= 1) {
-		janela->draw(monstro.S_monstro);
-	}
+			janela->draw(monstro.S_monstro);
+		}
+	
 	janela->draw(telajogo.S_parede);
 
 }
