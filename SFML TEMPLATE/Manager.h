@@ -39,7 +39,7 @@ struct Monstro
 	sf::Texture T_monstro;
 	sf::Sprite S_monstro;
 	sf::Vector2f direcaoMonstro;
-	float velocidade_monstro = .00005f;
+	float velocidade_monstro = .00008f;
 	int vida = 1;
 };
 

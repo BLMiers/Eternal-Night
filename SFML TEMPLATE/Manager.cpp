@@ -212,7 +212,7 @@ void Manager::UpdateJogo()
 	}
 	else
 	{
-			telajogo.player.move(-direcaoHorizontal * 10, -direcaoVertical * 10);
+			telajogo.player.move(-direcaoHorizontal * 5, -direcaoVertical * 5);
 			direcaoHorizontal = 0;
 			direcaoVertical = 0;
 	}
@@ -229,10 +229,12 @@ void Manager::UpdateJogo()
 		machado.S_machado.move(machado.vel);
 		if (machado.colisao) {
 			for (int i = 0; i < 10; i++) {
-				if (machado.S_machado.getGlobalBounds().intersects(monstro[i].S_monstro.getGlobalBounds())) {
-					monstro[i].vida--;
-					machado.arremesando = false;
-					machado.colisao = false;
+				if (monstro[i].vida >= 1) {
+					if (machado.S_machado.getGlobalBounds().intersects(monstro[i].S_monstro.getGlobalBounds())) {
+						monstro[i].vida--;
+						machado.arremesando = false;
+						machado.colisao = false;
+					}
 				}
 			}
 		}
@@ -258,9 +260,6 @@ void Manager::UpdateJogo()
 	if (CameraDentroLimiteY())
 		camera.setCenter(camera.getCenter().x, telajogo.player.getPosition().y);
 	janela->setView(camera);
-	for (int i = 0; i < 10; i++) {
-		monstro[i].S_monstro.getGlobalBounds().intersects(monstro[i].S_monstro.getGlobalBounds());
-	}
 }
 
 void Manager::UpdateGameOver()
