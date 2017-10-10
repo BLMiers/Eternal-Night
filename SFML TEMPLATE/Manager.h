@@ -7,7 +7,7 @@
 #define SCREEN_WIDTH 1280
 #define LARGURA_CAMERA 480
 #define ALTURA_CAMERA 270
-#define VELOCIDADE_PLAYER 1
+#define VELOCIDADE_PLAYER 0.2
 
 #define PI 3.14159265359f
 
@@ -31,7 +31,8 @@ struct Machado
 	sf::Sprite S_machado;
 	sf::Vector2f destino, vel;
 	bool arremesando = false;
-	float velocidade = 1.f, direcaoArremesso;
+	float velocidade = .1f, direcaoArremesso;
+	bool colisao=false;
 };
 struct Monstro
 {
@@ -71,7 +72,7 @@ private: //AQUI VOCÊ CRIA AS VARIÁVEIS
 	Jogo telajogo;
 	Player personagem;
 	Machado machado;
-	Monstro monstro;
+	Monstro monstro[10];
 
 	short estadoTela = MENU, direcaoHorizontal, direcaoVertical;
 	bool cima, baixo, esquerda, direita;
@@ -101,14 +102,10 @@ public:
 	bool MouseClicouEmCima(sf::Vector2f posObjeto, sf::Vector2f dimensaoObjeto);
 
 	bool Colisao() {
-		
-		
 		if (telajogo.player.getGlobalBounds().intersects(telajogo.S_parede.getGlobalBounds())){
 			return true;
 		}
-		if (machado.S_machado.getGlobalBounds().intersects(monstro.S_monstro.getGlobalBounds())) {
-			monstro.vida--;
-		}
+
 		return false;
 	}
 	bool CameraDentroLimiteX();

@@ -72,13 +72,14 @@ Manager::Manager()
 	//telajogo.S_machado.setPosition(telajogo.player.getPosition().x + 65, telajogo.player.getPosition().y+65);
 
 	//Monstro//
-	monstro.T_monstro.loadFromFile("Assets/Monstro.png");
-	monstro.S_monstro.setTexture(monstro.T_monstro);
-	monstro.S_monstro.setTextureRect(sf::IntRect(0, 0, 34,65));
-	monstro.S_monstro.setScale(0.8, 0.8);
-	monstro.S_monstro.setPosition(600, 480);
-	monstro.S_monstro.setOrigin(monstro.S_monstro.getLocalBounds().width*0.5f, monstro.S_monstro.getLocalBounds().height*0.5f);
-
+	for (int i = 0; i < 10; i++) {
+		monstro[i].T_monstro.loadFromFile("Assets/Monstro.png");
+		monstro[i].S_monstro.setTexture(monstro[i].T_monstro);
+		monstro[i].S_monstro.setTextureRect(sf::IntRect(0, 0, 34, 65));
+		monstro[i].S_monstro.setScale(0.8, 0.8);
+		monstro[i].S_monstro.setPosition(rand()%SCREEN_WIDTH+1,rand()%SCREEN_HEIGHT+1);
+		monstro[i].S_monstro.setOrigin(monstro[i].S_monstro.getLocalBounds().width*0.5f, monstro[i].S_monstro.getLocalBounds().height*0.5f);
+	}
 	//Parede//
 	telajogo.T_parede.loadFromFile("Assets/Parede.png");
 	telajogo.S_parede.setTexture(telajogo.T_parede);
@@ -218,27 +219,48 @@ void Manager::UpdateJogo()
 	
 	//Rotação do Personagem//
 	telajogo.player.setRotation(calcularAngulo((sf::Vector2f)posicaoMouseMundo, telajogo.player.getPosition()));
-	monstro.S_monstro.setRotation(calcularAngulo((sf::Vector2f)monstro.S_monstro.getPosition(), telajogo.player.getPosition()));
+	for (int i = 0; i < 10; i++) {
+		monstro[i].S_monstro.setRotation(calcularAngulo((sf::Vector2f)monstro[i].S_monstro.getPosition(), telajogo.player.getPosition()));
+	}
 
 	//Arremesso de Machado//
 	if (machado.arremesando)
 	{
 		machado.S_machado.move(machado.vel);
-		if (Magnitude(machado.S_machado.getPosition() - machado.destino) < 1.f)
+		if (machado.colisao) {
+			for (int i = 0; i < 10; i++) {
+				if (machado.S_machado.getGlobalBounds().intersects(monstro[i].S_monstro.getGlobalBounds())) {
+					monstro[i].vida--;
+					machado.arremesando = false;
+					machado.colisao = false;
+				}
+			}
+		}
+		if (Magnitude(machado.S_machado.getPosition() - machado.destino) < 1.f) {
 			machado.arremesando = false;
+			machado.colisao = false;
+		}
 	}
-	if (machado.S_machado.getPosition().x > SCREEN_WIDTH || machado.S_machado.getPosition().x < 0 || machado.S_machado.getPosition().y < 0 || machado.S_machado.getPosition().y > SCREEN_HEIGHT)
+		
+	if (machado.S_machado.getPosition().x > SCREEN_WIDTH || machado.S_machado.getPosition().x < 0 || machado.S_machado.getPosition().y < 0 || machado.S_machado.getPosition().y > SCREEN_HEIGHT) {
 		machado.arremesando = false;
+		machado.colisao = false;
+	}
 	//Monstro Seguindo player//
-	if (monstro.vida >= 1) {
-		monstro.direcaoMonstro = ((sf::Vector2f)telajogo.player.getPosition() - monstro.S_monstro.getPosition());
-		monstro.S_monstro.move(monstro.direcaoMonstro*monstro.velocidade_monstro);
+	for (int i = 0; i<10; i++){
+		if (monstro[i].vida >= 1) {
+			monstro[i].direcaoMonstro = ((sf::Vector2f)telajogo.player.getPosition() - monstro[i].S_monstro.getPosition());
+			monstro[i].S_monstro.move(monstro[i].direcaoMonstro*monstro[i].velocidade_monstro);
+		}
 	}
 	if (CameraDentroLimiteX())
 		camera.setCenter(telajogo.player.getPosition().x, camera.getCenter().y);
 	if (CameraDentroLimiteY())
 		camera.setCenter(camera.getCenter().x, telajogo.player.getPosition().y);
 	janela->setView(camera);
+	for (int i = 0; i < 10; i++) {
+		monstro[i].S_monstro.getGlobalBounds().intersects(monstro[i].S_monstro.getGlobalBounds());
+	}
 }
 
 void Manager::UpdateGameOver()
@@ -260,10 +282,11 @@ void Manager::RenderJogo()
 		janela->draw(machado.S_machado);
 		
 	}
-	
-	if (monstro.vida >= 1) {
-			janela->draw(monstro.S_monstro);
+	for (int i = 0; i < 10; i++) {
+		if (monstro[i].vida >= 1) {
+			janela->draw(monstro[i].S_monstro);
 		}
+	}
 	
 	janela->draw(telajogo.S_parede);
 
@@ -281,9 +304,6 @@ void Manager::InputTeclado()
 	case sf::Keyboard::Escape:
 		quit = true;
 		break;
-	case sf::Keyboard::E:
-		monstro.vida++;
-		break;
 	}
 }
 
@@ -298,6 +318,7 @@ void Manager::MouseClicado()
 			{
 				machado.destino = (sf::Vector2f)posicaoMouseMundo;
 				machado.arremesando = true;
+				machado.colisao = true;
 				machado.S_machado.setPosition(telajogo.player.getPosition());
 				machado.direcaoArremesso = calcularAngulo(sf::Vector2f(posicaoMouseMundo - telajogo.player.getPosition()));
 				machado.vel = { cosf(machado.direcaoArremesso * PI/180), sinf(machado.direcaoArremesso * PI / 180) } ;
