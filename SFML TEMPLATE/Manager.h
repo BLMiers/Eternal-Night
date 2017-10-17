@@ -7,7 +7,8 @@
 #define SCREEN_WIDTH 1280
 #define LARGURA_CAMERA 480
 #define ALTURA_CAMERA 270
-#define VELOCIDADE_PLAYER 0.2
+#define VELOCIDADE_PLAYER 1
+#define NUM_MONSTROS 10
 
 #define PI 3.14159265359f
 
@@ -41,6 +42,7 @@ struct Monstro
 	sf::Vector2f direcaoMonstro;
 	float velocidade_monstro = .00008f;
 	int vida = 1;
+	bool vivo = false;
 };
 
 //Tela do Jogo//
@@ -62,6 +64,7 @@ struct Player
 class Manager
 {
 private: //AQUI VOCÊ CRIA AS VARIÁVEIS
+	sf::Clock clock;
 	sf::RenderWindow *janela = nullptr;
 	sf::Vector2i posicaoMouse;
 	sf::Vector2f posicaoMouseMundo;
@@ -72,9 +75,9 @@ private: //AQUI VOCÊ CRIA AS VARIÁVEIS
 	Jogo telajogo;
 	Player personagem;
 	Machado machado;
-	Monstro monstro[10];
+	Monstro monstro[NUM_MONSTROS];
 
-	short estadoTela = MENU, direcaoHorizontal, direcaoVertical;
+	short estadoTela = MENU, direcaoHorizontal, direcaoVertical, monstroAtual = 0;
 	bool cima, baixo, esquerda, direita;
 	bool quit = false;
 public:
