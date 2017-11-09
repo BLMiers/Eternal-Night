@@ -86,6 +86,9 @@ Manager::Manager()
 	telajogo.mapa.setTextureRect(sf::IntRect(0, 0, 1280, 679));
 	telajogo.mapa.setSize(sf::Vector2f(SCREEN_WIDTH, SCREEN_HEIGHT));
 	telajogo.mapa.setPosition(0, 0);
+
+	fonte.loadFromFile("Assets/arial.ttf");
+	texto.setFont(fonte);
 }
 
 Manager::~Manager() {
@@ -172,7 +175,7 @@ void Manager::UpdateMenu()
 
 void Manager::UpdateJogo()
 {
-
+	
 	//Movimentação Personagem//
 	if (!Colisao()) {
 		cima = sf::Keyboard::isKeyPressed(sf::Keyboard::W);
@@ -245,6 +248,21 @@ void Manager::UpdateJogo()
 		machado.arremesando = false;
 		machado.colisao = false;
 	}
+	//Lógica do Texto//
+	texto.setPosition(camera.getCenter().x - 200, camera.getCenter().y - 100);
+	switch (personagem.hp) {
+	case 0: {texto.setString("RIP");
+		estadoTela = GAMEOVER;
+		break;}
+	case 1: {texto.setString('1');
+		break;}
+	case 2: {texto.setString("2");
+		break;}
+	case 3: {texto.setString("3");
+		break;}
+	}
+
+
 	//Monstro Seguindo player//
 	for (int i = 0; i < NUM_MONSTROS; i++) {
 		if (monstro[i].vivo) {
@@ -257,7 +275,7 @@ void Manager::UpdateJogo()
 		camera.setCenter(telajogo.player.getPosition().x, camera.getCenter().y);
 	if (CameraDentroLimiteY())
 		camera.setCenter(camera.getCenter().x, telajogo.player.getPosition().y);
-	//janela->setView(camera);
+	janela->setView(camera);
 	if (clock.getElapsedTime().asSeconds() > 5.f)
 	{
 		if (monstro[monstroAtual].vida > 0 && monstro[monstroAtual].vivo == false)
@@ -265,6 +283,16 @@ void Manager::UpdateJogo()
 
 		monstroAtual = (monstroAtual + 1) % NUM_MONSTROS;
 		clock.restart();
+	}
+
+	//Colisão do Monstro com Player//
+	for (int i = 0; i < NUM_MONSTROS; i++) {
+		if (telajogo.player.getGlobalBounds().intersects(monstro[i].S_monstro.getGlobalBounds())) {
+			if (imunidade.getElapsedTime().asSeconds() > 1.5f) {
+				personagem.hp--;
+				imunidade.restart();
+			}
+		}
 	}
 }
 
@@ -283,6 +311,7 @@ void Manager::RenderJogo()
 {
 	janela->draw(telajogo.mapa);
 	janela->draw(telajogo.player);
+	janela->draw(texto);
 	if (machado.arremesando) {
 		janela->draw(machado.S_machado);
 

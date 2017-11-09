@@ -58,19 +58,24 @@ struct Jogo
 //Atributos do Jogador//
 struct Player
 {
+	int hp = 3;
 	bool colisao = false;
+	bool imune = false;
 	
 };
 class Manager
 {
 private: //AQUI VOCÊ CRIA AS VARIÁVEIS
 	sf::Clock clock;
+	sf::Clock imunidade;
 	sf::RenderWindow *janela = nullptr;
 	sf::Vector2i posicaoMouse;
 	sf::Vector2f posicaoMouseMundo;
 	sf::Event eventos;
 	sf::View camera;
 	sf::FloatRect areaMovimentoCamera;
+	sf::Text texto;
+	sf::Font fonte;
 	Menu telaMenu;
 	Jogo telajogo;
 	Player personagem;
@@ -80,6 +85,7 @@ private: //AQUI VOCÊ CRIA AS VARIÁVEIS
 	short estadoTela = MENU, direcaoHorizontal, direcaoVertical, monstroAtual = 0;
 	bool cima, baixo, esquerda, direita;
 	bool quit = false;
+	float texto_x, texto_y;
 public:
 	Manager();
 	~Manager();
