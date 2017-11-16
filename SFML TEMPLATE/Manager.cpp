@@ -89,6 +89,11 @@ Manager::Manager()
 
 	fonte.loadFromFile("Assets/arial.ttf");
 	texto.setFont(fonte);
+
+	telaMenu.Musica_menu.openFromFile("Assets/Musica_menu.wav");
+	telaMenu.Musica_menu.setVolume(5);
+	telaMenu.Musica_menu.play();
+	telaMenu.Musica_menu.setLoop(true);
 }
 
 Manager::~Manager() {
@@ -288,9 +293,11 @@ void Manager::UpdateJogo()
 	//Colisão do Monstro com Player//
 	for (int i = 0; i < NUM_MONSTROS; i++) {
 		if (telajogo.player.getGlobalBounds().intersects(monstro[i].S_monstro.getGlobalBounds())) {
-			if (imunidade.getElapsedTime().asSeconds() > 1.5f) {
-				personagem.hp--;
-				imunidade.restart();
+			if (monstro[i].vivo){
+				if (imunidade.getElapsedTime().asSeconds() > 1.5f) {
+					personagem.hp--;
+					imunidade.restart();
+				}
 			}
 		}
 	}
@@ -356,9 +363,14 @@ void Manager::MouseClicado()
 				machado.vel *= machado.velocidade;
 			}
 		}
-		if (MouseClicouEmCima(telaMenu.Botao.getPosition(), sf::Vector2f(telaMenu.Botao.getGlobalBounds().width, telaMenu.Botao.getGlobalBounds().height)))
+		if (MouseClicouEmCima(telaMenu.Botao.getPosition(), sf::Vector2f(telaMenu.Botao.getGlobalBounds().width, telaMenu.Botao.getGlobalBounds().height))) {
+			telaMenu.Musica_menu.stop();
+			telajogo.Musica_jogo.openFromFile("Assets/Musica_jogo.wav");
+			telajogo.Musica_jogo.setVolume(10);
+			telajogo.Musica_jogo.play();
+			telajogo.Musica_jogo.setLoop(true);
 			estadoTela = JOGO;
-
+		}
 		break;
 
 	case sf::Mouse::Right: //Mouse Botao Direito Pressionado

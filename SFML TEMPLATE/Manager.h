@@ -25,6 +25,7 @@ struct Menu
 	sf::RectangleShape fundo;
 	sf::RectangleShape m_rect;
 	sf::Sprite Botao;
+	sf::Music Musica_menu;
 };
 struct Machado
 {
@@ -54,6 +55,7 @@ struct Jogo
 	sf::Texture T_parede;
 	sf::Texture T_mapa;
 	sf::RectangleShape mapa;
+	sf::Music Musica_jogo;
 };
 //Atributos do Jogador//
 struct Player
