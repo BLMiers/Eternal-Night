@@ -8,7 +8,7 @@
 #define LARGURA_CAMERA 480
 #define ALTURA_CAMERA 270
 #define VELOCIDADE_PLAYER 1
-#define NUM_MONSTROS 10
+#define NUM_MONSTROS 50
 
 #define PI 3.14159265359f
 
@@ -41,7 +41,7 @@ struct Monstro
 	sf::Texture T_monstro;
 	sf::Sprite S_monstro;
 	sf::Vector2f direcaoMonstro;
-	float velocidade_monstro = .00008f;
+	float velocidade_monstro = .0008f;
 	int vida = 1;
 	bool vivo = false;
 };
@@ -56,6 +56,13 @@ struct Jogo
 	sf::Texture T_mapa;
 	sf::RectangleShape mapa;
 	sf::Music Musica_jogo;
+};
+struct Gameover
+{
+	sf::Texture T_gameover;
+	sf::RectangleShape gameover;
+	sf::Texture T_retry;
+	sf::Sprite S_retry;
 };
 //Atributos do Jogador//
 struct Player
@@ -83,6 +90,7 @@ private: //AQUI VOCÊ CRIA AS VARIÁVEIS
 	Player personagem;
 	Machado machado;
 	Monstro monstro[NUM_MONSTROS];
+	Gameover g_over;
 
 	short estadoTela = MENU, direcaoHorizontal, direcaoVertical, monstroAtual = 0;
 	bool cima, baixo, esquerda, direita;
@@ -113,7 +121,7 @@ public:
 	bool MouseClicouEmCima(sf::Vector2f posObjeto, sf::Vector2f dimensaoObjeto);
 
 	bool Colisao() {
-		if (telajogo.player.getGlobalBounds().intersects(telajogo.S_parede.getGlobalBounds())){
+		if (telajogo.player.getGlobalBounds().intersects(telajogo.S_parede.getGlobalBounds())) {
 			return true;
 		}
 
@@ -121,4 +129,27 @@ public:
 	}
 	bool CameraDentroLimiteX();
 	bool CameraDentroLimiteY();
-};
+	void criar_tudo() {
+		telajogo.player.setPosition(1000, 200);
+		personagem.hp = 3;
+
+		for (int i = 0; i < NUM_MONSTROS; i++) {
+			monstro[i].vivo = false;
+		}
+
+		camera.setSize(LARGURA_CAMERA, ALTURA_CAMERA);
+		camera.setCenter(telajogo.player.getPosition());
+		areaMovimentoCamera.width = (SCREEN_WIDTH - LARGURA_CAMERA)*1.f;
+		areaMovimentoCamera.height = (SCREEN_HEIGHT - ALTURA_CAMERA)*1.f;
+		areaMovimentoCamera.left = (SCREEN_WIDTH - areaMovimentoCamera.width)*.5f;
+		areaMovimentoCamera.top = (SCREEN_HEIGHT - areaMovimentoCamera.height)*.5f;
+	}
+	void normalize(sf::Vector2f v) {
+		float length = (float)sqrt(v.x*v.x + v.y*v.y);
+		if (length > 0) {
+			v.x = v.x / length;
+			v.y = v.y / length;
+		}
+		}
+	};
+

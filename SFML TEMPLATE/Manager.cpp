@@ -67,7 +67,7 @@ Manager::Manager()
 	//telajogo.S_machado.setPosition(telajogo.player.getPosition().x + 65, telajogo.player.getPosition().y+65);
 
 	//Monstro//
-	for (int i = 0; i < 10; i++) {
+	for (int i = 0; i < NUM_MONSTROS; i++) {
 		monstro[i].T_monstro.loadFromFile("Assets/Monstro.png");
 		monstro[i].S_monstro.setTexture(monstro[i].T_monstro);
 		monstro[i].S_monstro.setTextureRect(sf::IntRect(0, 0, 34, 65));
@@ -94,6 +94,20 @@ Manager::Manager()
 	telaMenu.Musica_menu.setVolume(5);
 	telaMenu.Musica_menu.play();
 	telaMenu.Musica_menu.setLoop(true);
+	//Tela GameOver
+	g_over.T_gameover.loadFromFile("Assets/tela_gameover.png");
+	g_over.gameover.setTexture(&g_over.T_gameover);
+	g_over.gameover.setTextureRect(sf::IntRect(0, 0, 160, 90));
+	g_over.gameover.setSize(sf::Vector2f(SCREEN_WIDTH, SCREEN_HEIGHT));
+	g_over.gameover.setPosition(0, 0);
+
+	//Botão Retry
+	g_over.T_retry.loadFromFile("Assets/Botao_Restart.png");
+	g_over.S_retry.setTexture(g_over.T_retry);
+	g_over.S_retry.setTextureRect(sf::IntRect(0, 0, 79, 33));
+	g_over.S_retry.setScale(2, 2);
+	g_over.S_retry.setPosition(520, 610);
+	
 }
 
 Manager::~Manager() {
@@ -222,7 +236,7 @@ void Manager::UpdateJogo()
 
 	//Rotação do Personagem//
 	telajogo.player.setRotation(calcularAngulo((sf::Vector2f)posicaoMouseMundo, telajogo.player.getPosition()));
-	for (int i = 0; i < 10; i++) {
+	for (int i = 0; i <NUM_MONSTROS; i++) {
 		monstro[i].S_monstro.setRotation(calcularAngulo((sf::Vector2f)monstro[i].S_monstro.getPosition(), telajogo.player.getPosition()));
 	}
 
@@ -231,7 +245,7 @@ void Manager::UpdateJogo()
 	{
 		machado.S_machado.move(machado.vel);
 		if (machado.colisao) {
-			for (int i = 0; i < 10; i++) {
+			for (int i = 0; i < NUM_MONSTROS; i++) {
 				if (monstro[i].vivo) {
 					if (machado.S_machado.getGlobalBounds().intersects(monstro[i].S_monstro.getGlobalBounds())) {
 						monstro[i].vida--;
@@ -257,7 +271,9 @@ void Manager::UpdateJogo()
 	texto.setPosition(camera.getCenter().x - 200, camera.getCenter().y - 100);
 	switch (personagem.hp) {
 	case 0: {texto.setString("RIP");
+		
 		estadoTela = GAMEOVER;
+
 		break;}
 	case 1: {texto.setString('1');
 		break;}
@@ -272,6 +288,7 @@ void Manager::UpdateJogo()
 	for (int i = 0; i < NUM_MONSTROS; i++) {
 		if (monstro[i].vivo) {
 			monstro[i].direcaoMonstro = ((sf::Vector2f)telajogo.player.getPosition() - monstro[i].S_monstro.getPosition());
+			normalize(monstro[i].direcaoMonstro);
 			monstro[i].S_monstro.move(monstro[i].direcaoMonstro*monstro[i].velocidade_monstro);
 		}
 	}
@@ -281,7 +298,7 @@ void Manager::UpdateJogo()
 	if (CameraDentroLimiteY())
 		camera.setCenter(camera.getCenter().x, telajogo.player.getPosition().y);
 	janela->setView(camera);
-	if (clock.getElapsedTime().asSeconds() > 5.f)
+	if (clock.getElapsedTime().asSeconds() > 1.f)
 	{
 		if (monstro[monstroAtual].vida > 0 && monstro[monstroAtual].vivo == false)
 			monstro[monstroAtual].vivo = true;
@@ -312,6 +329,7 @@ void Manager::RenderMenu()
 	janela->draw(telaMenu.fundo);
 	janela->draw(telaMenu.m_rect);
 	janela->draw(telaMenu.Botao);
+	std::cout << personagem.hp << std::endl;
 }
 
 void Manager::RenderJogo()
@@ -333,6 +351,12 @@ void Manager::RenderJogo()
 
 void Manager::RenderGameOver()
 {
+	camera.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+	camera.setCenter(SCREEN_WIDTH*.5f, SCREEN_HEIGHT*.5f);
+	janela->setView(camera);
+	janela->draw(g_over.gameover);
+	janela->draw(g_over.S_retry);
+	std::cout << posicaoMouse.x << " " << posicaoMouse.y << std::endl;
 }
 
 void Manager::InputTeclado()
@@ -363,13 +387,23 @@ void Manager::MouseClicado()
 				machado.vel *= machado.velocidade;
 			}
 		}
-		if (MouseClicouEmCima(telaMenu.Botao.getPosition(), sf::Vector2f(telaMenu.Botao.getGlobalBounds().width, telaMenu.Botao.getGlobalBounds().height))) {
-			telaMenu.Musica_menu.stop();
-			telajogo.Musica_jogo.openFromFile("Assets/Musica_jogo.wav");
-			telajogo.Musica_jogo.setVolume(10);
-			telajogo.Musica_jogo.play();
-			telajogo.Musica_jogo.setLoop(true);
-			estadoTela = JOGO;
+		if (estadoTela == MENU) {
+			if (MouseClicouEmCima(telaMenu.Botao.getPosition(), sf::Vector2f(telaMenu.Botao.getGlobalBounds().width, telaMenu.Botao.getGlobalBounds().height))) {
+				telaMenu.Musica_menu.stop();
+				telajogo.Musica_jogo.openFromFile("Assets/Musica_jogo.wav");
+				telajogo.Musica_jogo.setVolume(10);
+				telajogo.Musica_jogo.play();
+				telajogo.Musica_jogo.setLoop(true);
+				estadoTela = JOGO;
+			}
+		}
+		if (estadoTela == GAMEOVER)
+		{
+			if (g_over.S_retry.getGlobalBounds().contains((sf::Vector2f)posicaoMouse)) {
+				criar_tudo();
+				estadoTela = MENU;
+
+			}
 		}
 		break;
 
