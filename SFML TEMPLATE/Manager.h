@@ -8,18 +8,13 @@
 #define LARGURA_CAMERA 480
 #define ALTURA_CAMERA 270
 #define VELOCIDADE_PLAYER 1
+#define NUM_MONSTROS 10
 
 #define PI 3.14159265359f
 
 #define MENU 0
 #define JOGO 1
 #define GAMEOVER 2
-
-template <typename T>
-float Magnitude(const sf::Vector2<T>& v1)
-{
-	return (sqrtf((v1.x)*(v1.x)) + ((v1.y)*(v1.y)));
-}
 
 //Tela do Menu//
 struct Menu
@@ -30,22 +25,25 @@ struct Menu
 	sf::RectangleShape fundo;
 	sf::RectangleShape m_rect;
 	sf::Sprite Botao;
+	sf::Music Musica_menu;
 };
 struct Machado
 {
 	sf::Texture T_machado;
 	sf::Sprite S_machado;
-	sf::Vector2f direcaoArremesso, destino;
+	sf::Vector2f destino, vel;
 	bool arremesando = false;
-	float velocidade = .0005f;
+	float velocidade = .1f, direcaoArremesso;
+	bool colisao=false;
 };
 struct Monstro
 {
 	sf::Texture T_monstro;
 	sf::Sprite S_monstro;
 	sf::Vector2f direcaoMonstro;
-	float velocidade_monstro = .00005f;
+	float velocidade_monstro = .00008f;
 	int vida = 1;
+	bool vivo = false;
 };
 
 //Tela do Jogo//
@@ -57,31 +55,39 @@ struct Jogo
 	sf::Texture T_parede;
 	sf::Texture T_mapa;
 	sf::RectangleShape mapa;
+	sf::Music Musica_jogo;
 };
 //Atributos do Jogador//
 struct Player
 {
+	int hp = 3;
 	bool colisao = false;
+	bool imune = false;
 	
 };
 class Manager
 {
 private: //AQUI VOCÊ CRIA AS VARIÁVEIS
+	sf::Clock clock;
+	sf::Clock imunidade;
 	sf::RenderWindow *janela = nullptr;
 	sf::Vector2i posicaoMouse;
 	sf::Vector2f posicaoMouseMundo;
 	sf::Event eventos;
 	sf::View camera;
 	sf::FloatRect areaMovimentoCamera;
+	sf::Text texto;
+	sf::Font fonte;
 	Menu telaMenu;
 	Jogo telajogo;
 	Player personagem;
 	Machado machado;
-	Monstro monstro;
+	Monstro monstro[NUM_MONSTROS];
 
-	short estadoTela = MENU, direcaoHorizontal, direcaoVertical;
+	short estadoTela = MENU, direcaoHorizontal, direcaoVertical, monstroAtual = 0;
 	bool cima, baixo, esquerda, direita;
 	bool quit = false;
+	float texto_x, texto_y;
 public:
 	Manager();
 	~Manager();
@@ -107,20 +113,12 @@ public:
 	bool MouseClicouEmCima(sf::Vector2f posObjeto, sf::Vector2f dimensaoObjeto);
 
 	bool Colisao() {
-		if (telajogo.player.getGlobalBounds().intersects(monstro.S_monstro.getGlobalBounds())) {
-			if (monstro.vida >= 1) {
-				return true;
-			}
-		}
 		if (telajogo.player.getGlobalBounds().intersects(telajogo.S_parede.getGlobalBounds())){
 			return true;
 		}
-		if (machado.S_machado.getGlobalBounds().intersects(monstro.S_monstro.getGlobalBounds())) {
-			monstro.vida--;
-		}
+
 		return false;
 	}
 	bool CameraDentroLimiteX();
 	bool CameraDentroLimiteY();
 };
-
