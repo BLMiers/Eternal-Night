@@ -15,7 +15,7 @@
 #define MENU 0
 #define JOGO 1
 #define GAMEOVER 2
-
+#define VITORIA 3
 //Tela do Menu//
 struct Menu
 {
@@ -33,7 +33,7 @@ struct Machado
 	sf::Sprite S_machado;
 	sf::Vector2f destino, vel;
 	bool arremesando = false;
-	float velocidade = .1f, direcaoArremesso;
+	float velocidade = .5f, direcaoArremesso;
 	bool colisao=false;
 };
 struct Monstro
@@ -63,9 +63,9 @@ struct Boss {
 	sf::Sprite S_boss;
 	sf::Texture T_fogo;
 	sf::Sprite S_fogo;
-	int hp = 0;
+	int hp = 10;
 	sf::Vector2f direcaoBoss;
-	float velocidade_boss = .0012f
+	float velocidade_boss = .0012f;
 };
 struct Gameover
 {
@@ -73,6 +73,11 @@ struct Gameover
 	sf::RectangleShape gameover;
 	sf::Texture T_retry;
 	sf::Sprite S_retry;
+};
+struct Vitoria
+{
+	sf::Texture T_vitoria;
+	sf::RectangleShape vitoria;
 };
 //Atributos do Jogador//
 struct Player
@@ -103,12 +108,14 @@ private: //AQUI VOCÊ CRIA AS VARIÁVEIS
 	Machado machado;
 	Monstro monstro[NUM_MONSTROS];
 	Gameover g_over;
+	Vitoria vit;
 	Boss boss, fogo;
 
 	short estadoTela = MENU, direcaoHorizontal, direcaoVertical, monstroAtual = 0;
 	bool cima, baixo, esquerda, direita;
 	bool quit = false;
 	float texto_x, texto_y;
+	int monster_kil=0;
 public:
 	Manager();
 	~Manager();
@@ -122,10 +129,12 @@ public:
 	void UpdateMenu();
 	void UpdateJogo();
 	void UpdateGameOver();
+	void UpdateVitoria();
 
 	void RenderMenu();
 	void RenderJogo();
 	void RenderGameOver();
+	void RenderVitoria();
 
 	void InputTeclado();
 	void MouseClicado();

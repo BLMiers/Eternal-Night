@@ -77,14 +77,15 @@ Manager::Manager()
 	}
 
 	//Boss//
-	boss.T_boss.loadFromFile("Assets/sprite_00.png");
+	boss.T_boss.loadFromFile("Assets/boss.png");
 	boss.S_boss.setTexture(boss.T_boss);
-	boss.S_boss.setTextureRect(sf::IntRect(0, 0, 128, 128));
+	boss.S_boss.setTextureRect(sf::IntRect(0, 0, 37, 75));
 	boss.S_boss.setScale(1, 1);
-	
-	fogo.T_fogo.loadFromFile("Assets/sprite_02.png");
+	boss.S_boss.setOrigin(boss.S_boss.getLocalBounds().width*0.5f, boss.S_boss.getLocalBounds().height*0.5f);
+
+	fogo.T_fogo.loadFromFile("Assets/bola_fogo.png");
 	fogo.S_fogo.setTexture(fogo.T_fogo);
-	fogo.S_fogo.setTextureRect(sf::IntRect(0, 0, 128, 128));
+	fogo.S_fogo.setTextureRect(sf::IntRect(0, 0, 47, 59));
 	fogo.S_fogo.setScale(1, 1);
 
 	//Parede//
@@ -119,7 +120,15 @@ Manager::Manager()
 	g_over.S_retry.setTextureRect(sf::IntRect(0, 0, 79, 33));
 	g_over.S_retry.setScale(2, 2);
 	g_over.S_retry.setPosition(520, 610);
+
+	//Tela Vitoria
+	vit.T_vitoria.loadFromFile("Assets/Tela_Vitoria.png");
+	vit.vitoria.setTexture(&vit.T_vitoria);
+	vit.vitoria.setTextureRect(sf::IntRect(0, 0, 160, 90));
+	vit.vitoria.setSize(sf::Vector2f(SCREEN_WIDTH, SCREEN_HEIGHT));
+	vit.vitoria.setPosition(0, 0);
 	
+
 }
 
 Manager::~Manager() {
@@ -176,6 +185,8 @@ void Manager::Update()
 	case GAMEOVER:
 		UpdateGameOver();
 		break;
+	case VITORIA:
+		UpdateVitoria();
 	}
 }
 
@@ -195,6 +206,8 @@ void Manager::Render()
 	case GAMEOVER:
 		RenderGameOver();
 		break;
+	case VITORIA:
+		RenderVitoria();
 	}
 	janela->display();
 }
@@ -207,9 +220,9 @@ void Manager::UpdateMenu()
 void Manager::UpdateJogo()
 {
 	
-	if (boss.hp <= 0) {
+	/*if (boss.hp <= 0) {
 		estadoTela = GAMEOVER;
-	}
+	}*/
 
 	//Movimentação Personagem//
 	if (!Colisao()) {
@@ -252,9 +265,11 @@ void Manager::UpdateJogo()
 
 	//Rotação do Personagem//
 	telajogo.player.setRotation(calcularAngulo((sf::Vector2f)posicaoMouseMundo, telajogo.player.getPosition()));
+	
 	for (int i = 0; i <NUM_MONSTROS; i++) {
 		monstro[i].S_monstro.setRotation(calcularAngulo((sf::Vector2f)monstro[i].S_monstro.getPosition(), telajogo.player.getPosition()));
 	}
+	boss.S_boss.setRotation(calcularAngulo((sf::Vector2f)boss.S_boss.getPosition(), telajogo.player.getPosition()));
 
 	//Arremesso de Machado//
 	if (machado.arremesando)
@@ -269,14 +284,18 @@ void Manager::UpdateJogo()
 						machado.colisao = false;
 						if (monstro[i].vida < 1)
 							monstro[i].vivo = false;
+						monster_kil++;
 					}
 				}
 			}
-			if (boss.hp > 0) {
+			if (boss.hp > 0&&monster_kil>=20) {
 				if (machado.S_machado.getGlobalBounds().intersects(boss.S_boss.getGlobalBounds())) {
 					boss.hp--;
 					machado.arremesando = false;
 					machado.colisao = false;
+					if (boss.hp <= 0) {
+						estadoTela = VITORIA;
+					}
 				}
 			}
 		}
@@ -284,11 +303,12 @@ void Manager::UpdateJogo()
 			machado.arremesando = false;
 			machado.colisao = false;
 		}
-	}
 
-	if (machado.S_machado.getPosition().x > SCREEN_WIDTH || machado.S_machado.getPosition().x < 0 || machado.S_machado.getPosition().y < 0 || machado.S_machado.getPosition().y > SCREEN_HEIGHT) {
-		machado.arremesando = false;
-		machado.colisao = false;
+
+		if (machado.S_machado.getPosition().x > SCREEN_WIDTH || machado.S_machado.getPosition().x < 0 || machado.S_machado.getPosition().y < 0 || machado.S_machado.getPosition().y > SCREEN_HEIGHT) {
+			machado.arremesando = false;
+			machado.colisao = false;
+		}
 	}
 	//Lógica do Texto//
 	texto.setPosition(camera.getCenter().x - 200, camera.getCenter().y - 100);
@@ -317,7 +337,7 @@ void Manager::UpdateJogo()
 	}
 
 	//Boss Seguindo Player//
-	if (boss.hp > 0) {
+	if (boss.hp > 0 && monster_kil >= 20) {
 		boss.direcaoBoss = ((sf::Vector2f)telajogo.player.getPosition() - boss.S_boss.getPosition());
 		normalize(boss.direcaoBoss);
 		boss.S_boss.move(boss.direcaoBoss*boss.velocidade_boss);
@@ -349,15 +369,27 @@ void Manager::UpdateJogo()
 			}
 		}
 	}
+	if (telajogo.player.getGlobalBounds().intersects(boss.S_boss.getGlobalBounds())) {
+		if (boss.hp > 0&&monster_kil>=20) {
+			if (imunidade.getElapsedTime().asSeconds() > 1.5f) {
+				personagem.hp--;
+				imunidade.restart();
+			}
+		}
+	}
 
 	//Relógio do Boss//
-	if (clock_boss.getElapsedTime().asSeconds() > 15.f) {
+	/*if (clock_boss.getElapsedTime().asSeconds() > 15.f) {
 		boss.hp = 5;
 		boss.S_boss.setPosition(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
-	}
+	}*/
 }
 
 void Manager::UpdateGameOver()
+{
+}
+
+void Manager::UpdateVitoria()
 {
 }
 
@@ -366,7 +398,7 @@ void Manager::RenderMenu()
 	janela->draw(telaMenu.fundo);
 	janela->draw(telaMenu.m_rect);
 	janela->draw(telaMenu.Botao);
-	std::cout << personagem.hp << std::endl;
+	
 }
 
 void Manager::RenderJogo()
@@ -382,7 +414,11 @@ void Manager::RenderJogo()
 		if (monstro[i].vivo)
 			janela->draw(monstro[i].S_monstro);
 	janela->draw(telajogo.S_parede);
-
+	if (boss.hp > 0&&monster_kil>=20) {
+		janela->draw(boss.S_boss);
+	}
+	//std::cout << boss.hp << std::endl;
+	std::cout << monster_kil << std::endl;
 }
 
 
@@ -394,6 +430,14 @@ void Manager::RenderGameOver()
 	janela->draw(g_over.gameover);
 	janela->draw(g_over.S_retry);
 	std::cout << posicaoMouse.x << " " << posicaoMouse.y << std::endl;
+}
+
+void Manager::RenderVitoria()
+{
+	camera.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+	camera.setCenter(SCREEN_WIDTH*.5f, SCREEN_HEIGHT*.5f);
+	janela->setView(camera);
+	janela->draw(vit.vitoria);
 }
 
 void Manager::InputTeclado()
