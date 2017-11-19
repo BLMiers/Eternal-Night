@@ -57,6 +57,16 @@ struct Jogo
 	sf::RectangleShape mapa;
 	sf::Music Musica_jogo;
 };
+
+struct Boss {
+	sf::Texture T_boss;
+	sf::Sprite S_boss;
+	sf::Texture T_fogo;
+	sf::Sprite S_fogo;
+	int hp = 0;
+	sf::Vector2f direcaoBoss;
+	float velocidade_boss = .0012f
+};
 struct Gameover
 {
 	sf::Texture T_gameover;
@@ -77,6 +87,8 @@ class Manager
 private: //AQUI VOCÊ CRIA AS VARIÁVEIS
 	sf::Clock clock;
 	sf::Clock imunidade;
+	sf::Clock clock_boss;
+	sf::Clock cooldown_boss;
 	sf::RenderWindow *janela = nullptr;
 	sf::Vector2i posicaoMouse;
 	sf::Vector2f posicaoMouseMundo;
@@ -91,6 +103,7 @@ private: //AQUI VOCÊ CRIA AS VARIÁVEIS
 	Machado machado;
 	Monstro monstro[NUM_MONSTROS];
 	Gameover g_over;
+	Boss boss, fogo;
 
 	short estadoTela = MENU, direcaoHorizontal, direcaoVertical, monstroAtual = 0;
 	bool cima, baixo, esquerda, direita;

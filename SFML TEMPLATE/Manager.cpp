@@ -75,6 +75,18 @@ Manager::Manager()
 		monstro[i].S_monstro.setPosition(rand() % SCREEN_WIDTH + 1, rand() % SCREEN_HEIGHT + 1);
 		monstro[i].S_monstro.setOrigin(monstro[i].S_monstro.getLocalBounds().width*0.5f, monstro[i].S_monstro.getLocalBounds().height*0.5f);
 	}
+
+	//Boss//
+	boss.T_boss.loadFromFile("Assets/sprite_00.png");
+	boss.S_boss.setTexture(boss.T_boss);
+	boss.S_boss.setTextureRect(sf::IntRect(0, 0, 128, 128));
+	boss.S_boss.setScale(1, 1);
+	
+	fogo.T_fogo.loadFromFile("Assets/sprite_02.png");
+	fogo.S_fogo.setTexture(fogo.T_fogo);
+	fogo.S_fogo.setTextureRect(sf::IntRect(0, 0, 128, 128));
+	fogo.S_fogo.setScale(1, 1);
+
 	//Parede//
 	telajogo.T_parede.loadFromFile("Assets/Parede.png");
 	telajogo.S_parede.setTexture(telajogo.T_parede);
@@ -195,6 +207,10 @@ void Manager::UpdateMenu()
 void Manager::UpdateJogo()
 {
 	
+	if (boss.hp <= 0) {
+		estadoTela = GAMEOVER;
+	}
+
 	//Movimentação Personagem//
 	if (!Colisao()) {
 		cima = sf::Keyboard::isKeyPressed(sf::Keyboard::W);
@@ -256,6 +272,13 @@ void Manager::UpdateJogo()
 					}
 				}
 			}
+			if (boss.hp > 0) {
+				if (machado.S_machado.getGlobalBounds().intersects(boss.S_boss.getGlobalBounds())) {
+					boss.hp--;
+					machado.arremesando = false;
+					machado.colisao = false;
+				}
+			}
 		}
 		if (Magnitude(machado.S_machado.getPosition() - machado.destino) < 1.f) {
 			machado.arremesando = false;
@@ -292,6 +315,14 @@ void Manager::UpdateJogo()
 			monstro[i].S_monstro.move(monstro[i].direcaoMonstro*monstro[i].velocidade_monstro);
 		}
 	}
+
+	//Boss Seguindo Player//
+	if (boss.hp > 0) {
+		boss.direcaoBoss = ((sf::Vector2f)telajogo.player.getPosition() - boss.S_boss.getPosition());
+		normalize(boss.direcaoBoss);
+		boss.S_boss.move(boss.direcaoBoss*boss.velocidade_boss);
+	}
+
 	//Lógica da Camera//
 	if (CameraDentroLimiteX())
 		camera.setCenter(telajogo.player.getPosition().x, camera.getCenter().y);
@@ -317,6 +348,12 @@ void Manager::UpdateJogo()
 				}
 			}
 		}
+	}
+
+	//Relógio do Boss//
+	if (clock_boss.getElapsedTime().asSeconds() > 15.f) {
+		boss.hp = 5;
+		boss.S_boss.setPosition(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
 	}
 }
 
