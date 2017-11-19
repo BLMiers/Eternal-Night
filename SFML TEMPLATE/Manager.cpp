@@ -29,6 +29,8 @@ Manager::Manager()
 	areaMovimentoCamera.left = (SCREEN_WIDTH - areaMovimentoCamera.width)*.5f;
 	areaMovimentoCamera.top = (SCREEN_HEIGHT - areaMovimentoCamera.height)*.5f;
 
+	
+
 	//Tela de Fundo//
 	telaMenu.fundoMenu.loadFromFile("Assets/Fundo.png");
 	telaMenu.fundo.setTexture(&telaMenu.fundoMenu);
@@ -83,20 +85,16 @@ Manager::Manager()
 	boss.S_boss.setScale(1, 1);
 	boss.S_boss.setOrigin(boss.S_boss.getLocalBounds().width*0.5f, boss.S_boss.getLocalBounds().height*0.5f);
 
-	fogo.T_fogo.loadFromFile("Assets/bola_fogo.png");
-	fogo.S_fogo.setTexture(fogo.T_fogo);
-	fogo.S_fogo.setTextureRect(sf::IntRect(0, 0, 47, 59));
-	fogo.S_fogo.setScale(1, 1);
+	boss.T_fogo.loadFromFile("Assets/bola_fogo.png");
+	boss.S_fogo.setTexture(boss.T_fogo);
+	boss.S_fogo.setTextureRect(sf::IntRect(0, 0, 47, 59));
+	boss.S_fogo.setScale(1, 1);
 
-	//Parede//
-	telajogo.T_parede.loadFromFile("Assets/Parede.png");
-	telajogo.S_parede.setTexture(telajogo.T_parede);
-	telajogo.S_parede.setTextureRect(sf::IntRect(0, 0, 62, 28));
 
 	//Mapa//
 	telajogo.T_mapa.loadFromFile("Assets/Mapa.png");
 	telajogo.mapa.setTexture(&telajogo.T_mapa);
-	telajogo.mapa.setTextureRect(sf::IntRect(0, 0, 1280, 679));
+	telajogo.mapa.setTextureRect(sf::IntRect(0, 0, 1280, 720));
 	telajogo.mapa.setSize(sf::Vector2f(SCREEN_WIDTH, SCREEN_HEIGHT));
 	telajogo.mapa.setPosition(0, 0);
 
@@ -124,11 +122,47 @@ Manager::Manager()
 	//Tela Vitoria
 	vit.T_vitoria.loadFromFile("Assets/Tela_Vitoria.png");
 	vit.vitoria.setTexture(&vit.T_vitoria);
-	vit.vitoria.setTextureRect(sf::IntRect(0, 0, 160, 90));
+	vit.vitoria.setTextureRect
+	(sf::IntRect(0, 0, 160, 90));
 	vit.vitoria.setSize(sf::Vector2f(SCREEN_WIDTH, SCREEN_HEIGHT));
 	vit.vitoria.setPosition(0, 0);
 	
+	//Paredes
+	par1.parede.setTextureRect(sf::IntRect(75, 1, 95, 720));
+	par2.parede.setTextureRect(sf::IntRect(1186, 1, 95, 720));
+	par2.parede.setPosition(1186, 1);
+	par3.parede.setTextureRect(sf::IntRect(111, 1, 1061, 9));
+	par3.parede.setPosition(111, 1);
+	par4.parede.setTextureRect(sf::IntRect(111, 719, 1061, 9));
+	par4.parede.setPosition(111, 719);
+	//Carros
+	car[0].car.setTextureRect(sf::IntRect(1072, 536, 30, 76));
+	car[0].car.setPosition(1072, 536);
+	car[1].car.setTextureRect(sf::IntRect(549, 320, 30, 76));
+	car[1].car.setPosition(549, 320);
+	car[2].car.setTextureRect(sf::IntRect(705, 124, 30, 76));
+	car[2].car.setPosition(705, 124);
+	car[3].car.setTextureRect(sf::IntRect(1074, 57, 30, 76));
+	car[3].car.setPosition(1074, 57);
+	car[4].car.setTextureRect(sf::IntRect(576, 652, 70, 32));
+	car[4].car.setPosition(576, 652);
+	car[5].car.setTextureRect(sf::IntRect(834, 566, 70, 32));
+	car[5].car.setPosition(834, 566);
+	car[6].car.setTextureRect(sf::IntRect(932, 398, 70, 32));
+	car[6].car.setPosition(932, 398);
+	car[7].car.setTextureRect(sf::IntRect(271, 44, 70, 32));
+	car[7].car.setPosition(271, 44);
+	car[8].car.setTextureRect(sf::IntRect(289, 232, 70, 32));
+	car[8].car.setPosition(289, 232);
+	car[9].car.setTextureRect(sf::IntRect(383, 507, 70, 32));
+	car[9].car.setPosition(383, 507);
 
+	//Vida
+	personagem.T_vida1.loadFromFile("Assets/Coracao1.png");
+	personagem.S_vida1.setTexture(personagem.T_vida1);
+	personagem.S_vida1.setTextureRect(sf::IntRect(0, 0, 250, 247));
+	personagem.S_vida1.setScale(.1f, .1f);
+	
 }
 
 Manager::~Manager() {
@@ -271,7 +305,7 @@ void Manager::UpdateJogo()
 	}
 	boss.S_boss.setRotation(calcularAngulo((sf::Vector2f)boss.S_boss.getPosition(), telajogo.player.getPosition()));
 
-	//Arremesso de Machado//
+	//Arremesso de Machado
 	if (machado.arremesando)
 	{
 		machado.S_machado.move(machado.vel);
@@ -288,7 +322,7 @@ void Manager::UpdateJogo()
 					}
 				}
 			}
-			if (boss.hp > 0&&monster_kil>=20) {
+			if (boss.hp > 0 &&monster_kil>=20) {
 				if (machado.S_machado.getGlobalBounds().intersects(boss.S_boss.getGlobalBounds())) {
 					boss.hp--;
 					machado.arremesando = false;
@@ -311,6 +345,9 @@ void Manager::UpdateJogo()
 		}
 	}
 	//Lógica do Texto//
+	personagem.S_vida3.setPosition(camera.getCenter().x - 235, camera.getCenter().y - 133);
+	personagem.S_vida2.setPosition(camera.getCenter().x - 235, camera.getCenter().y - 133);
+	personagem.S_vida1.setPosition(camera.getCenter().x - 235, camera.getCenter().y - 133);
 	texto.setPosition(camera.getCenter().x - 200, camera.getCenter().y - 100);
 	switch (personagem.hp) {
 	case 0: {texto.setString("RIP");
@@ -318,7 +355,7 @@ void Manager::UpdateJogo()
 		estadoTela = GAMEOVER;
 
 		break;}
-	case 1: {texto.setString('1');
+	case 1: {texto.setString("1");
 		break;}
 	case 2: {texto.setString("2");
 		break;}
@@ -378,11 +415,18 @@ void Manager::UpdateJogo()
 		}
 	}
 
-	//Relógio do Boss//
-	/*if (clock_boss.getElapsedTime().asSeconds() > 15.f) {
-		boss.hp = 5;
-		boss.S_boss.setPosition(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
-	}*/
+	if (clock_boss.getElapsedTime().asSeconds() > 5.f) {
+		if (boss.hp > 0 && monster_kil >= 20) {
+			boss.fogo_boss == true;
+			boss.destino_fogo = (sf::Vector2f)telajogo.player.getPosition();
+			boss.S_fogo.setPosition(boss.S_boss.getPosition());
+			boss.direcao_fogo = calcularAngulo(sf::Vector2f(telajogo.player.getPosition() - boss.S_boss.getPosition()));
+			boss.fogo_vel = { cosf(boss.direcao_fogo * PI / 180), sinf(boss.direcao_fogo * PI / 180) };
+			boss.fogo_vel *= boss.velocidade_fogo;
+			boss.S_fogo.move(boss.fogo_vel);
+		}
+		clock_boss.restart();
+	}
 }
 
 void Manager::UpdateGameOver()
@@ -413,12 +457,28 @@ void Manager::RenderJogo()
 	for (short i = 0; i < NUM_MONSTROS; i++)
 		if (monstro[i].vivo)
 			janela->draw(monstro[i].S_monstro);
-	janela->draw(telajogo.S_parede);
+	
 	if (boss.hp > 0&&monster_kil>=20) {
 		janela->draw(boss.S_boss);
 	}
-	//std::cout << boss.hp << std::endl;
-	std::cout << monster_kil << std::endl;
+	if (boss.fogo_boss) {
+		janela->draw(boss.S_fogo);
+	}
+	
+	switch (personagem.hp) {
+	case 0: {
+
+		estadoTela = GAMEOVER;
+
+		break; }
+	case 1: {janela->draw(personagem.S_vida);
+		break; }
+	case 2: {texto.setString("2");
+		break; }
+	case 3: {texto.setString("3");
+		break; }
+	}
+	
 }
 
 
@@ -488,9 +548,6 @@ void Manager::MouseClicado()
 		}
 		break;
 
-	case sf::Mouse::Right: //Mouse Botao Direito Pressionado
-		telajogo.S_parede.setPosition(posicaoMouseMundo.x, posicaoMouseMundo.y);
-		break;
 	}
 }
 

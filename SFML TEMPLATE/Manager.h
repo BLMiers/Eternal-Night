@@ -51,8 +51,6 @@ struct Jogo
 {
 	sf::Texture personagem;
 	sf::Sprite player;
-	sf::Sprite S_parede;
-	sf::Texture T_parede;
 	sf::Texture T_mapa;
 	sf::RectangleShape mapa;
 	sf::Music Musica_jogo;
@@ -65,7 +63,9 @@ struct Boss {
 	sf::Sprite S_fogo;
 	int hp = 10;
 	sf::Vector2f direcaoBoss;
-	float velocidade_boss = .0012f;
+	float velocidade_boss = .0012f, direcao_fogo,velocidade_fogo=.3f;
+	sf::Vector2f destino_fogo,fogo_vel;
+	bool fogo_boss;
 };
 struct Gameover
 {
@@ -85,8 +85,23 @@ struct Player
 	int hp = 3;
 	bool colisao = false;
 	bool imune = false;
+	sf::Texture T_vida3;
+	sf::Sprite S_vida3;
+	sf::Texture T_vida3;
+	sf::Sprite S_vida3;
+	sf::Texture T_vida1;
+	sf::Sprite S_vida1;
 	
 };
+struct Paredes 
+{
+	sf::Sprite parede;
+};
+struct Carros 
+{
+	sf::Sprite car;
+};
+
 class Manager
 {
 private: //AQUI VOCÊ CRIA AS VARIÁVEIS
@@ -109,13 +124,15 @@ private: //AQUI VOCÊ CRIA AS VARIÁVEIS
 	Monstro monstro[NUM_MONSTROS];
 	Gameover g_over;
 	Vitoria vit;
-	Boss boss, fogo;
+	Boss boss;
+	Paredes par1, par2, par3, par4;
+	Carros car[10];
 
 	short estadoTela = MENU, direcaoHorizontal, direcaoVertical, monstroAtual = 0;
 	bool cima, baixo, esquerda, direita;
 	bool quit = false;
 	float texto_x, texto_y;
-	int monster_kil=0;
+	int monster_kil = 0;
 public:
 	Manager();
 	~Manager();
@@ -143,12 +160,27 @@ public:
 	bool MouseClicouEmCima(sf::Vector2f posObjeto, sf::Vector2f dimensaoObjeto);
 
 	bool Colisao() {
-		if (telajogo.player.getGlobalBounds().intersects(telajogo.S_parede.getGlobalBounds())) {
+
+		if (telajogo.player.getGlobalBounds().intersects(par1.parede.getGlobalBounds())) {
 			return true;
 		}
-
+		if (telajogo.player.getGlobalBounds().intersects(par2.parede.getGlobalBounds())) {
+			return true;
+		}
+		if (telajogo.player.getGlobalBounds().intersects(par3.parede.getGlobalBounds())) {
+			return true;
+		}
+		if (telajogo.player.getGlobalBounds().intersects(par4.parede.getGlobalBounds())) {
+			return true;
+		}
+		for (int i = 0; i < 9; i++) {
+			if (telajogo.player.getGlobalBounds().intersects(car[i].car.getGlobalBounds())) {
+				return true;
+			}
+		}
 		return false;
 	}
+	
 	bool CameraDentroLimiteX();
 	bool CameraDentroLimiteY();
 	void criar_tudo() {
@@ -158,6 +190,8 @@ public:
 		for (int i = 0; i < NUM_MONSTROS; i++) {
 			monstro[i].vivo = false;
 		}
+		boss.hp = 10;
+		monster_kil = 0;
 
 		camera.setSize(LARGURA_CAMERA, ALTURA_CAMERA);
 		camera.setCenter(telajogo.player.getPosition());
@@ -167,11 +201,11 @@ public:
 		areaMovimentoCamera.top = (SCREEN_HEIGHT - areaMovimentoCamera.height)*.5f;
 	}
 	void normalize(sf::Vector2f v) {
-		float length = (float)sqrt(v.x*v.x + v.y*v.y);
-		if (length > 0) {
-			v.x = v.x / length;
-			v.y = v.y / length;
+		//float length = (float)sqrt(v.x*v.x + v.y*v.y);
+		//if (length > 0) {
+			v.x = v.x / v.x;
+			v.y = v.y / v.y;
 		}
-		}
+		
 	};
 
