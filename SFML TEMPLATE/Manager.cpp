@@ -87,7 +87,7 @@ Manager::Manager()
 	//Boss//
 	boss.T_boss.loadFromFile("Assets/boss.png");
 	boss.S_boss.setTexture(boss.T_boss);
-	boss.S_boss.setTextureRect(sf::IntRect(0, 0, 37, 75));
+	boss.S_boss.setTextureRect(sf::IntRect(0, 0, 37, 65));
 	boss.S_boss.setScale(1, 1);
 	boss.S_boss.setOrigin(boss.S_boss.getLocalBounds().width*0.5f, boss.S_boss.getLocalBounds().height*0.5f);
 
