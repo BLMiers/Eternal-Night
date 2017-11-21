@@ -85,12 +85,6 @@ Manager::Manager()
 	boss.S_boss.setScale(1, 1);
 	boss.S_boss.setOrigin(boss.S_boss.getLocalBounds().width*0.5f, boss.S_boss.getLocalBounds().height*0.5f);
 
-	boss.T_fogo.loadFromFile("Assets/bola_fogo.png");
-	boss.S_fogo.setTexture(boss.T_fogo);
-	boss.S_fogo.setTextureRect(sf::IntRect(0, 0, 47, 59));
-	boss.S_fogo.setScale(1, 1);
-
-
 	//Mapa//
 	telajogo.T_mapa.loadFromFile("Assets/Mapa.png");
 	telajogo.mapa.setTexture(&telajogo.T_mapa);
@@ -162,6 +156,14 @@ Manager::Manager()
 	personagem.S_vida1.setTexture(personagem.T_vida1);
 	personagem.S_vida1.setTextureRect(sf::IntRect(0, 0, 250, 247));
 	personagem.S_vida1.setScale(.1f, .1f);
+	personagem.T_vida2.loadFromFile("Assets/Coracao2.png");
+	personagem.S_vida2.setTexture(personagem.T_vida2);
+	personagem.S_vida2.setTextureRect(sf::IntRect(0, 0, 500, 247));
+	personagem.S_vida2.setScale(.1f, .1f);
+	personagem.T_vida3.loadFromFile("Assets/Coracao3.png");
+	personagem.S_vida3.setTexture(personagem.T_vida3);
+	personagem.S_vida3.setTextureRect(sf::IntRect(0, 0, 750, 247));
+	personagem.S_vida3.setScale(.1f, .1f);
 	
 }
 
@@ -348,20 +350,7 @@ void Manager::UpdateJogo()
 	personagem.S_vida3.setPosition(camera.getCenter().x - 235, camera.getCenter().y - 133);
 	personagem.S_vida2.setPosition(camera.getCenter().x - 235, camera.getCenter().y - 133);
 	personagem.S_vida1.setPosition(camera.getCenter().x - 235, camera.getCenter().y - 133);
-	texto.setPosition(camera.getCenter().x - 200, camera.getCenter().y - 100);
-	switch (personagem.hp) {
-	case 0: {texto.setString("RIP");
-		
-		estadoTela = GAMEOVER;
-
-		break;}
-	case 1: {texto.setString("1");
-		break;}
-	case 2: {texto.setString("2");
-		break;}
-	case 3: {texto.setString("3");
-		break;}
-	}
+	
 
 
 	//Monstro Seguindo player//
@@ -414,19 +403,6 @@ void Manager::UpdateJogo()
 			}
 		}
 	}
-
-	if (clock_boss.getElapsedTime().asSeconds() > 5.f) {
-		if (boss.hp > 0 && monster_kil >= 20) {
-			boss.fogo_boss == true;
-			boss.destino_fogo = (sf::Vector2f)telajogo.player.getPosition();
-			boss.S_fogo.setPosition(boss.S_boss.getPosition());
-			boss.direcao_fogo = calcularAngulo(sf::Vector2f(telajogo.player.getPosition() - boss.S_boss.getPosition()));
-			boss.fogo_vel = { cosf(boss.direcao_fogo * PI / 180), sinf(boss.direcao_fogo * PI / 180) };
-			boss.fogo_vel *= boss.velocidade_fogo;
-			boss.S_fogo.move(boss.fogo_vel);
-		}
-		clock_boss.restart();
-	}
 }
 
 void Manager::UpdateGameOver()
@@ -471,11 +447,11 @@ void Manager::RenderJogo()
 		estadoTela = GAMEOVER;
 
 		break; }
-	case 1: {janela->draw(personagem.S_vida);
+	case 1: {janela->draw(personagem.S_vida1);
 		break; }
-	case 2: {texto.setString("2");
+	case 2: {janela->draw(personagem.S_vida2);
 		break; }
-	case 3: {texto.setString("3");
+	case 3: {janela->draw(personagem.S_vida3);
 		break; }
 	}
 	

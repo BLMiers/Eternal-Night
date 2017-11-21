@@ -59,13 +59,11 @@ struct Jogo
 struct Boss {
 	sf::Texture T_boss;
 	sf::Sprite S_boss;
-	sf::Texture T_fogo;
-	sf::Sprite S_fogo;
 	int hp = 10;
 	sf::Vector2f direcaoBoss;
-	float velocidade_boss = .0012f, direcao_fogo,velocidade_fogo=.3f;
-	sf::Vector2f destino_fogo,fogo_vel;
-	bool fogo_boss;
+	float velocidade_boss = .0012f;
+	
+	
 };
 struct Gameover
 {
@@ -87,8 +85,8 @@ struct Player
 	bool imune = false;
 	sf::Texture T_vida3;
 	sf::Sprite S_vida3;
-	sf::Texture T_vida3;
-	sf::Sprite S_vida3;
+	sf::Texture T_vida2;
+	sf::Sprite S_vida2;
 	sf::Texture T_vida1;
 	sf::Sprite S_vida1;
 	
