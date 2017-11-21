@@ -8,7 +8,7 @@
 #define LARGURA_CAMERA 480
 #define ALTURA_CAMERA 270
 #define VELOCIDADE_PLAYER 1
-#define NUM_MONSTROS 50
+#define NUM_MONSTROS 100
 
 #define PI 3.14159265359f
 
@@ -27,6 +27,7 @@ struct Menu
 	sf::Sprite Botao;
 	sf::Music Musica_menu;
 };
+//Sprite do Machado
 struct Machado
 {
 	sf::Texture T_machado;
@@ -36,6 +37,7 @@ struct Machado
 	float velocidade = .5f, direcaoArremesso;
 	bool colisao=false;
 };
+//Atributos dos Monstros
 struct Monstro
 {
 	sf::Texture T_monstro;
@@ -49,13 +51,11 @@ struct Monstro
 //Tela do Jogo//
 struct Jogo
 {
-	sf::Texture personagem;
-	sf::Sprite player;
 	sf::Texture T_mapa;
 	sf::RectangleShape mapa;
 	sf::Music Musica_jogo;
 };
-
+//Atributos do Boss
 struct Boss {
 	sf::Texture T_boss;
 	sf::Sprite S_boss;
@@ -65,6 +65,7 @@ struct Boss {
 	
 	
 };
+//Tela Gameover
 struct Gameover
 {
 	sf::Texture T_gameover;
@@ -72,14 +73,19 @@ struct Gameover
 	sf::Texture T_retry;
 	sf::Sprite S_retry;
 };
+//Tela Vitoria
 struct Vitoria
 {
 	sf::Texture T_vitoria;
 	sf::RectangleShape vitoria;
+	sf::Texture T_restart;
+	sf::Sprite S_restart;
 };
 //Atributos do Jogador//
 struct Player
 {
+	sf::Texture personagem;
+	sf::Sprite player;
 	int hp = 3;
 	bool colisao = false;
 	bool imune = false;
@@ -91,10 +97,12 @@ struct Player
 	sf::Sprite S_vida1;
 	
 };
+//Bloco de colisão das Paredes do Mapa
 struct Paredes 
 {
 	sf::Sprite parede;
 };
+//Blocos de colisão dos carros
 struct Carros 
 {
 	sf::Sprite car;
@@ -103,18 +111,14 @@ struct Carros
 class Manager
 {
 private: //AQUI VOCÊ CRIA AS VARIÁVEIS
-	sf::Clock clock;
-	sf::Clock imunidade;
-	sf::Clock clock_boss;
-	sf::Clock cooldown_boss;
+	sf::Clock clock;//Clock para o Respawn de Monstros
+	sf::Clock imunidade;//Clock da Imunidade do PLayer ao ser atacado
 	sf::RenderWindow *janela = nullptr;
 	sf::Vector2i posicaoMouse;
 	sf::Vector2f posicaoMouseMundo;
 	sf::Event eventos;
 	sf::View camera;
 	sf::FloatRect areaMovimentoCamera;
-	sf::Text texto;
-	sf::Font fonte;
 	Menu telaMenu;
 	Jogo telajogo;
 	Player personagem;
@@ -129,7 +133,7 @@ private: //AQUI VOCÊ CRIA AS VARIÁVEIS
 	short estadoTela = MENU, direcaoHorizontal, direcaoVertical, monstroAtual = 0;
 	bool cima, baixo, esquerda, direita;
 	bool quit = false;
-	float texto_x, texto_y;
+	//float texto_x, texto_y;
 	int monster_kil = 0;
 public:
 	Manager();
@@ -156,23 +160,23 @@ public:
 	void MouseMovido();
 
 	bool MouseClicouEmCima(sf::Vector2f posObjeto, sf::Vector2f dimensaoObjeto);
-
+//Colisão com os Objetos do Mapa//
 	bool Colisao() {
 
-		if (telajogo.player.getGlobalBounds().intersects(par1.parede.getGlobalBounds())) {
+		if (personagem.player.getGlobalBounds().intersects(par1.parede.getGlobalBounds())) {
 			return true;
 		}
-		if (telajogo.player.getGlobalBounds().intersects(par2.parede.getGlobalBounds())) {
+		if (personagem.player.getGlobalBounds().intersects(par2.parede.getGlobalBounds())) {
 			return true;
 		}
-		if (telajogo.player.getGlobalBounds().intersects(par3.parede.getGlobalBounds())) {
+		if (personagem.player.getGlobalBounds().intersects(par3.parede.getGlobalBounds())) {
 			return true;
 		}
-		if (telajogo.player.getGlobalBounds().intersects(par4.parede.getGlobalBounds())) {
+		if (personagem.player.getGlobalBounds().intersects(par4.parede.getGlobalBounds())) {
 			return true;
 		}
 		for (int i = 0; i < 9; i++) {
-			if (telajogo.player.getGlobalBounds().intersects(car[i].car.getGlobalBounds())) {
+			if (personagem.player.getGlobalBounds().intersects(car[i].car.getGlobalBounds())) {
 				return true;
 			}
 		}
@@ -181,8 +185,9 @@ public:
 	
 	bool CameraDentroLimiteX();
 	bool CameraDentroLimiteY();
+	//Reseta o mapa//
 	void criar_tudo() {
-		telajogo.player.setPosition(1000, 200);
+		personagem.player.setPosition(1000, 200);
 		personagem.hp = 3;
 
 		for (int i = 0; i < NUM_MONSTROS; i++) {
@@ -192,18 +197,18 @@ public:
 		monster_kil = 0;
 
 		camera.setSize(LARGURA_CAMERA, ALTURA_CAMERA);
-		camera.setCenter(telajogo.player.getPosition());
+		camera.setCenter(personagem.player.getPosition());
 		areaMovimentoCamera.width = (SCREEN_WIDTH - LARGURA_CAMERA)*1.f;
 		areaMovimentoCamera.height = (SCREEN_HEIGHT - ALTURA_CAMERA)*1.f;
 		areaMovimentoCamera.left = (SCREEN_WIDTH - areaMovimentoCamera.width)*.5f;
 		areaMovimentoCamera.top = (SCREEN_HEIGHT - areaMovimentoCamera.height)*.5f;
 	}
 	void normalize(sf::Vector2f v) {
-		//float length = (float)sqrt(v.x*v.x + v.y*v.y);
-		//if (length > 0) {
+		float length = (float)sqrt(v.x*v.x + v.y*v.y);
+		if (length > 0) {
 			v.x = v.x / v.x;
 			v.y = v.y / v.y;
 		}
-		
+	}
 	};
 
